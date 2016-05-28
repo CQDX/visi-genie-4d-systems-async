@@ -50,7 +50,7 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 
 ## Host.Instance 
 
-The exemplar below is from a Windows IoT headless app that shows how-to use the *Host.Instance* singleton:
+The exemplar below shows how-to use the *Host.Instance* singleton:
 
 ```C#
 using System;
@@ -147,12 +147,12 @@ namespace DisplayIO
                                {
                                    case 0:
                                        {
-										   //TODO: Application specific handling goes here...
+										   //TODO: Application specific for button id 0 handling goes here...
                                            break;
                                        }
                                    case 1:
                                        {
-									       //TODO: Application specific button handling goes here...
+									       //TODO: Application specific for button id 1 handling goes here...
                                            break;
                                        }
                                }
@@ -169,14 +169,13 @@ namespace DisplayIO
                                         }
                                    case 1:
                                        {
-										   //TODO: user activated Form 1 on display
+										   //TODO: user activated Form 1 on display...
                                            break; 
                                         }
                                 }//END OF SWITCH
 
                                 break;
                            }//END OF FORM ACTIVATE
-
                         case ObjectType.Winbutton:
                            {
                                 //Winbutton event was recevied from host
@@ -184,15 +183,16 @@ namespace DisplayIO
                                {
                                    case 0:
                                        {
+										   // i.e., maybe shutdown headless app here
                                            break;
                                        }
 
                                    case 5:
                                        {
+									       // i.e., maybe reboot headless app here
                                            break;
                                        }
                                }
-
                                break; 
                             }//END OF WIN BUTTON
 
@@ -208,7 +208,7 @@ namespace DisplayIO
 }
 ```
 
-## Report Object Status Message Handler Exemplar
+## Report Object Status Message Handler 
 
 The exemplar below shows how-to handle a received 4D System Report Object Status Message. Switch statements can be added to handle behavior specific to the particular Workshop 4D project.
 
@@ -221,14 +221,6 @@ namespace DisplayIO
 {
     public class ReportObjectStatusMessageHandler
     {
-
-        public ReportObjectStatusMessageHandler(ADCBoard board)
-        {
-            this.EnabledBoard = board;
-        }
-
-        public ADCBoard EnabledBoard { get; set; }
-
         public async void Handler(object sender, DeferrableDisplayEventArgs e)
         {
             using (var deferral = e.GetDeferral())
