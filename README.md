@@ -8,7 +8,7 @@ This is a C# async class library that support Windows IoT apps requiring a 4D Sy
 
 * Applications requiring a non-primary display can use a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX as their host.  
 
-* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
+* Headed or headless Windows IoT Core applications can be accompanied by one or more connected display(s).
 
 * Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages the lifetime of serial device instances. 
   For example, a Raspberry Pi 2 with four USB ports potentially could have four different display modules to monitor various subsystems of an embedded device and in turn offer user interactive control. 
