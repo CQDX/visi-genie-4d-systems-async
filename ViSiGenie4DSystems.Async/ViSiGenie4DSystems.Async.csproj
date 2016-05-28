@@ -106,6 +106,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="app.manifest" />
     <None Include="AsyncConsulting.pfx" />
+    <None Include="Packaging\ViSiGenie4DSystems.Async.dll.1.0.0.nupkg" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +150,7 @@
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packaging\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
