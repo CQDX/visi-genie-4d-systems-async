@@ -1,34 +1,30 @@
 # ViSiGenie4DSystems.Async
 
-# SUMMARY
+# About
 
-This is a C# async class library that provides host-to-display serial communications for Windows IoT apps requiring a 4D Systems non-primary touch display.
-For example, one of many kits like the 4.3" DIABLO16 Display Module with 4GB Industrial Grade MicroSD Card and Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable.
+A C# async class library for Windows IoT apps where one or more 4D Systems display module(s) can be connected to the host's serial communications port. Windows IoT makers and commercial builders using this library should appreciate how nicely its maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
+An example of a touch display would be the 4.3" DIABLO16 Display Module loaded with a Workshop4 project running off of 2-4 GB Phison MicroSD Card. The host is connected to each display using a Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable.
 
-4D Systems Windows IoT makers and commercial builders using this library will appreciate how nicely its object-oriented library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic concepts written in the ViSi-Genie Reference Manual.
+* Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
-* Use the ViSiGenie4DSystems.Async library to support host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app. 
+* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display.
+
+* Supports host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app. 
   Hereafter, the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX is simply referred to as the "Host". In fact, the
   underlying C# class supports host -to- 4D Display serial communications is called Host.
 
-* The ViSiGenie4DSystems.Async library supports discovery of one or more connected serial devices. 
-  A scalability feature that bodes well for using the Silicon Labs 4D Systems Programming Cable is this software supports display discovery and instantiate instances of itself for each serially connected device. For example, the Raspberry Pi 2 has four USB ports and this means four different 4D Systems display modules could be connected up to a single Pi device. 
+* Can discover of one or more connected serial devices. The singleton class named Hosts, instantiate instances of serially connected device. 
+  For example, the Raspberry Pi 2 has four USB ports and this means four different 4D Systems display modules could be connected to a single Pi host. 
   
-* The ViSiGenie4DSystems.Async library supports listening for ViSi Genie Report Events. 
-  This is where the host app can receive Report Event and Report Object Messages from 4D Display. 
-  i.e., the user presses a button object.
-  
-* This library is NOT a C Language port of the existing 4D Systems Linux Raspberry Pi ViSi-Genie or Raspberry Pi Serial code as these libraries are incompatible with the asynchronous programming model. 
+* Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
 
-* A Windows IoT Core device can be configured to run a single headed or headless application. 
-  Likewise, a Headed or Headless app can use a 4D Display also. 
-
-## QUICK START
+## BRING-UP NOTES 
 
 * Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
 * Edit your app's package manifest and add serialcommunication capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
 
+```XML
 	<Capabilities>
 		<DeviceCapability Name="serialcommunication">
 			<Device Id = "any" >
@@ -36,10 +32,12 @@ For example, one of many kits like the 4.3" DIABLO16 Display Module with 4GB Ind
 			</Device>
 		</DeviceCapability>
 	</Capabilities>
-		
-* Use the 4D Systems Silabs USB programmers cable. Connect the cable from the host USB port to display's backside 5 pins connector.
+```		
+* Use the brand 4D Systems Silabs USB programmers cable. Connect the cable from the host USB port to display's backside 5 pins connector.
 
-Here is a Windows IoT headless app example, which highlights how to use the ViSiGenie4DSystems.Async library:
+## CODE CLIP  
+
+This is a code clip from a Windows IoT headless app, which comments how-to get started using the ViSiGenie4DSystems.Async library:
 
 ```C#
 using System;
@@ -70,6 +68,7 @@ namespace DisplayHeadless
 			await discoverDeviceIdsTask;
 			 
 			//2. Connect host to 4D Systems display
+			//   In this case, ony one display is connected to the host
 			var deviceId = discoverDeviseIdsTask.Result.First();
 			
 			//Baud rate of host must match 4D Workshop project baud rate
@@ -77,7 +76,8 @@ namespace DisplayHeadless
 			Task connectTask = Host.Instance.Connect(deviceId, portDef);
 			await connectTask;
 
-			//3. Host start listening for display events
+			//3. Host start listening for display events. 
+			//   You need to write the event handler class and handler method.
 			await Host.Instance.StartListening(deviceId,
 												/*** TODO MyReportEventClass.ReportEventMessageHandler.Handler,
 												MyReportObjectClass.ReportObjectStatusMessageHandler.Handler ***/);
