@@ -2,17 +2,16 @@
 
 # About
 
-This is a C# async class library for Windows IoT apps where a 4D Systems display module can be connected to the host's serial communication port. Windows IoT makers and commercial builders using this library should appreciate how nicely it maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
-An example of a resistive touch display is the 4.3" DIABLO16 Display Module that is loaded with a Workshop4 project running from 2-4 GB micro-SD card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+This is a C# async class library that support Windows IoT apps requiring a 4D Systems. A typical IoT application scenario might be a power meter device built using a resistive touch 4.3" DIABLO16 Display Module loaded with a Workshop4 user interface project running off of a 2-4 GB micro-SD card. Leveraging Windows IoT core, an ARM, Qualcomm or Intel SOC can be easily connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
-* Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
+* Windows IoT makers and commercial builders will appreciate how nicely ViSiGenie4DSystems.Async semantically maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specified in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
 * Applications requiring a non-primary display can use a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX as their host.  
 
 * Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
 
-* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages serial device instances. 
-  For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
+* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages the lifetime of serial device instances. 
+  For example, a Raspberry Pi 2 with four USB ports potentially could have four different display modules to monitor an embedded system and offer user interactive control. 
   
 * Queues ViSi Genie Report Events and Report Objects which originate from the display and then sends a custom C# async event. For example, the user presses a menu button object on the resistive touch display.  
 
