@@ -9,7 +9,7 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 
 * Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
 
-* Host application development scenarios include the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app.  
+* Host application development scenarios include the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX.  
 
 * Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages serial device instances. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
@@ -27,7 +27,7 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 
 * Build and deploy your 4D Workshop4 project to the display's micro-SD card and then install micron-SD card into display's pannel.
 
-* In Microsoft Visual Studio, use the NuGet Package Manager Console to install this library into your project: 
+* In Microsoft Visual Studio, use the NuGet Package Manager Console to install the library into your project: 
 
 ```
 PM> Install-Package ViSiGenie4DSystems.Async.dll
