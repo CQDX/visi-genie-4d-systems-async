@@ -2,8 +2,8 @@
 
 # About
 
-A C# async class library for Windows IoT apps where one or more 4D Systems display module(s) can be connected to the host's serial communications port. Windows IoT makers and commercial builders using this library should appreciate how nicely its maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
-An example of a touch display would be the 4.3" DIABLO16 Display Module loaded with a Workshop4 project running off of 2-4 GB Phison MicroSD Card. The host is connected to each display using a Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable.
+This is a C# async class library for Windows IoT apps where one or more 4D Systems display module(s) can be connected to the host's serial communications port. Windows IoT makers and commercial builders using this library should appreciate how nicely it maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
+An example of a touch display would be the 4.3" DIABLO16 Display Module loaded with a Workshop4 project running off of 2-4 GB Phison MicroSD Card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
 * Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
@@ -13,8 +13,8 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
   Hereafter, the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX is simply referred to as the "Host". In fact, the
   underlying C# class supports host -to- 4D Display serial communications is called Host.
 
-* Can discover of one or more connected serial devices. The singleton class named Hosts, instantiate instances of serially connected device. 
-  For example, the Raspberry Pi 2 has four USB ports and this means four different 4D Systems display modules could be connected to a single Pi host. 
+* Can discover of one or more connected serial devices. The singleton class named Hosts creates instances of serially connected device. 
+  For example, the Raspberry Pi 2 has four USB ports and this means potentially four different 4D Systems display modules could be connected to a single Pi host. 
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
 
@@ -22,7 +22,7 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
 
 * Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
-* Edit your app's package manifest and add serialcommunication capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
+* Edit your app's package manifest and add "serialcommunication" capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -33,11 +33,11 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
 		</DeviceCapability>
 	</Capabilities>
 ```		
-* Use the brand 4D Systems Silabs USB programmers cable. Connect the cable from the host USB port to display's backside 5 pins connector.
+* Use a 4D Systems Silabs USB programmers cable. Connect the cable from the host USB port to display's backside 5 pins connector.
 
 ## CODE CLIP  
 
-This is a code clip from a Windows IoT headless app, which comments how-to get started using the ViSiGenie4DSystems.Async library:
+This is a code clip from a Windows IoT headless app. Notice comments on how-to get started using the ViSiGenie4DSystems.Async library:
 
 ```C#
 using System;
@@ -77,7 +77,7 @@ namespace DisplayHeadless
 			await connectTask;
 
 			//3. Host start listening for display events. 
-			//   You need to write the event handler class and handler method.
+			//   You need to write the handler method; i.e., TODO...
 			await Host.Instance.StartListening(deviceId,
 												/*** TODO MyReportEventClass.ReportEventMessageHandler.Handler,
 												MyReportObjectClass.ReportObjectStatusMessageHandler.Handler ***/);
