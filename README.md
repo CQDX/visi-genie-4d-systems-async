@@ -10,10 +10,9 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
 * Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display.
 
 * Supports host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app. 
-  Hereafter, the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX is simply referred to as the "Host". In fact, the
-  underlying C# class supports host -to- 4D Display serial communications is called Host.
+  Hereafter, the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX is simply referred to as the "Host". 
 
-* Can discover of one or more connected serial devices. The singleton class named Hosts creates instances of serially connected device. 
+* Can discover of one or more connected serial devices. The singleton class named *Host* creates instances of serially connected device. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different 4D Systems display modules could be connected to a single Pi host. 
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
@@ -22,7 +21,7 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
 
 * Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
-* Edit your app's package manifest and add "serialcommunication" capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
+* Edit your app's package manifest and add the *serialcommunication* capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -33,11 +32,11 @@ An example of a touch display would be the 4.3" DIABLO16 Display Module loaded w
 		</DeviceCapability>
 	</Capabilities>
 ```		
-* Use a 4D Systems Silabs USB programmers cable. Connect the cable from the host USB port to display's backside 5 pins connector.
+* Plug the 4D Systems Silabs USB programmers cable into the host's USB port and connect the other end of the cable to display's backside 5 pins connector.
 
 ## CODE CLIP  
 
-This is a code clip from a Windows IoT headless app. Notice comments on how-to get started using the ViSiGenie4DSystems.Async library:
+Below is code clip from a Windows IoT headless app:
 
 ```C#
 using System;
