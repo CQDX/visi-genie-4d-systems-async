@@ -2,8 +2,8 @@
 
 # About
 
-This is a C# async class library for Windows IoT apps where one or more 4D Systems display module(s) can be connected to the host's serial communications port. Windows IoT makers and commercial builders using this library should appreciate how nicely it maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
-An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded with a Workshop4 project running from 2-4 GB micro-SD card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+This is a C# async class library for Windows IoT apps where a 4D Systems display module can be connected to the host's serial communication port. Windows IoT makers and commercial builders using this library should appreciate how nicely it maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
+An example of a resistive touch display is the 4.3" DIABLO16 Display Module that is loaded with a Workshop4 project running from 2-4 GB micro-SD card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
 * Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
