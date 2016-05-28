@@ -4,11 +4,11 @@
 
 This is a C# async class library that support Windows IoT apps requiring a 4D Systems display. A typical IoT scenario might be a power meter built using a resistive touch 4.3" DIABLO16 Display Module loaded with a Workshop4 user interface project executing from a 4 GB micro-SD card. Leveraging Windows IoT core, an ARM, Qualcomm or Intel SOC can be connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
-* Windows IoT makers and commercial builders will appreciate how nicely the ViSiGenie4DSystems.Async library semantically maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specified in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
+* Enumerations, Events, and Messages map to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specified in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
-* Applications requiring a non-primary display can use a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX as their host.  
+* Intended for applications requiring a non-primary display for a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX host.  
 
-* Headed or headless Windows IoT Core applications can be accompanied by one or more connected display(s).
+* Connects one or more displays to the Headed or Headless Windows IoT Core application.
 
 * Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages the lifetime of serial device instances. 
   For example, a Raspberry Pi 2 with four USB ports potentially could have four different display modules to monitor various subsystems of an embedded device and in turn offer user interactive control. 
