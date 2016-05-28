@@ -1,6 +1,7 @@
 # ViSiGenie4DSystems.Async
 
-SUMMARY
+# SUMMARY
+
 This is a C# async class library that provides host-to-display serial communications for Windows IoT apps requiring a 4D Systems non-primary touch display.
 For example, one of many kits like the 4.3" DIABLO16 Display Module with 4GB Industrial Grade MicroSD Card and Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable.
 
@@ -22,7 +23,7 @@ For example, one of many kits like the 4.3" DIABLO16 Display Module with 4GB Ind
 * A Windows IoT Core device can be configured to run a single headed or headless application. 
   Likewise, a Headed or Headless app can use a 4D Display also. 
 
-QUICK START
+## QUICK START
 
 * Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
@@ -40,6 +41,7 @@ QUICK START
 
 Here is a Windows IoT headless app example, which highlights how to use the ViSiGenie4DSystems.Async library:
 
+```C#
 using System;
 using System.Linq;
 using Windows.ApplicationModel.Background;
@@ -99,3 +101,4 @@ namespace DisplayHeadless
         }        
     }
 }
+```
