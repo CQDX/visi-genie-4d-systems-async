@@ -14,7 +14,7 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 * Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages serial device instances. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
   
-* Supports queued listening of ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the resistive touch display.  
+* Queues ViSi Genie Report Events and Report Objects which originate from the display and then sends a custom C# async event. For example, the user presses a menu button object on the resistive touch display.  
 
 ## Hardware 
 
@@ -33,7 +33,7 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 PM> Install-Package ViSiGenie4DSystems.Async.dll
 ```
 
-* In Microsoft Visual Studio, edit the app package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
+* In Microsoft Visual Studio, edit the project's Package.appmanifest and add the capability to do *serialcommunication*. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -48,9 +48,9 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 
 * Build your C# hosts project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and then run your app.
 
-## Code Clip 
+## Host.Instance Exemplar
 
-Below is code clip from a Windows IoT headless app that shows how to use the *Host.Instance* singleton:
+The exemplar below is from a Windows IoT headless app that shows how-to use the *Host.Instance* singleton:
 
 ```C#
 using System;
@@ -92,8 +92,8 @@ namespace DisplayHeadless
 			//3. Host start listening for display events. 
 			//   You need to write the handler method; i.e., TODO...
 			await Host.Instance.StartListening(deviceId,
-												/*** TODO MyReportEventClass.ReportEventMessageHandler.Handler,
-												MyReportObjectClass.ReportObjectStatusMessageHandler.Handler ***/);
+												ReportEventMessageHandler.ReportEventMessageHandler.Handler,
+												MyReportObjectClass.ReportObjectStatusMessageHandler.Handler);
 		
 			//4. Change to form 0 on display per 4D Workshop4 project layout...
 			const int displayFormId = 0;
@@ -107,11 +107,142 @@ namespace DisplayHeadless
 		
 			//5. Host stops listening to display events
 		    Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId,
-										/*** TODO MyReportEventClass.ReportEventMessageHandler.Handler,
-										MyReportObjectClass.ReportObjectStatusMessageHandler.Handler ***/);
+										ReportEventMessageHandler.ReportEventMessageHandler.Handler,
+										MyReportObjectClass.ReportObjectStatusMessageHandler.Handler);
     
             _defferal.Complete();
         }        
+    }
+}
+```
+
+## Report Event Message Handler 
+
+The exemplar below shows how-to handle a received 4D System Report Event Message. Switch statements can be added to handle behavior specific to the particular Workshop 4D project.
+
+```C#
+using System.Threading.Tasks;
+
+using ViSiGenie4DSystems.Async.Enumeration;
+using ViSiGenie4DSystems.Async.Event;
+using ViSiGenie4DSystems.Async.Message;
+
+namespace DisplayIO
+{
+    public class ReportEventMessageHandler 
+    {
+        public async void Handler (object sender, DeferrableDisplayEventArgs e)
+        {
+            using (var deferral = e.GetDeferral())
+            {
+                //Run task message cracker in thread pool thread
+                await Task.Run(() =>
+               {
+                   ReportEventMessage hotReportEventMessage = (ReportEventMessage)sender;
+
+				   //TODO: Switch on your specific Workshop 4D project identifiers, for example,
+                   switch (hotReportEventMessage.ObjectType)
+                   {
+                       case ObjectType.Button4D:
+                           {
+                               switch (hotReportEventMessage.ObjectIndex)
+                               {
+                                   case 0:
+                                       {
+										   //TODO: Application specific handling goes here...
+                                           break;
+                                       }
+                                   case 1:
+                                       {
+									       //TODO: Application specific button handling goes here...
+                                           break;
+                                       }
+                               }
+                               break;
+                           }
+                       case ObjectType.Form:
+                           {
+                               switch (hotReportEventMessage.ObjectIndex)
+                               {
+                                   case 0:
+                                       {
+                                           //TODO: user activated Form 0 on display
+                                           break; 
+                                        }
+                                   case 1:
+                                       {
+										   //TODO: user activated Form 1 on display
+                                           break; //-----
+                                        }
+                                }//END OF SWITCH
+
+                                break;
+                           }//END OF FORM ACTIVATE
+
+                        case ObjectType.Winbutton:
+                           {
+                                //Winbutton event was recevied from host
+                                switch (hotReportEventMessage.ObjectIndex)
+                               {
+                                   case 0:
+                                       {
+                                           break;
+                                       }
+
+                                   case 5:
+                                       {
+                                           break;
+                                       }
+                               }
+
+                               break; 
+                            }//END OF WIN BUTTON
+
+                        default:
+                           {
+                               break;
+                           }
+                   }
+                });
+            }
+        }
+    }
+}
+```
+
+## Report Object Status Message Handler Exemplar
+
+The exemplar below shows how-to handle a received 4D System Report Object Status Message. Switch statements can be added to handle behavior specific to the particular Workshop 4D project.
+
+```C#
+using System.Threading.Tasks;
+using ViSiGenie4DSystems.Async.Event;
+using ViSiGenie4DSystems.Async.Message;
+
+namespace DisplayIO
+{
+    public class ReportObjectStatusMessageHandler
+    {
+
+        public ReportObjectStatusMessageHandler(ADCBoard board)
+        {
+            this.EnabledBoard = board;
+        }
+
+        public ADCBoard EnabledBoard { get; set; }
+
+        public async void Handler(object sender, DeferrableDisplayEventArgs e)
+        {
+            using (var deferral = e.GetDeferral())
+            {
+                await Task.Run(() =>
+                {
+                    ReportObjectStatusMessage hotReportObjectMessage = (ReportObjectStatusMessage)sender;
+             
+			        //TODO: Switch on the report object status message ...
+                });
+            }
+        }
     }
 }
 ```
