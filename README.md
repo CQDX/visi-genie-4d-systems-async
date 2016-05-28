@@ -46,7 +46,9 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 ```		
 * Plug the USB programmers cable into the Pi 3 or equivalent USB port and connect the other end of the cable into the backside of the display's 5 pins connector.
 
-* Build your C# hosts project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and then run your app.
+* Review and add code clips shown below to your project. 
+
+* Build your C# project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and debug your app.
 
 ## Host.Instance 
 
