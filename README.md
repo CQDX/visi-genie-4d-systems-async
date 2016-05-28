@@ -3,7 +3,7 @@
 # About
 
 This is a C# async class library for Windows IoT apps where one or more 4D Systems display module(s) can be connected to the host's serial communications port. Windows IoT makers and commercial builders using this library should appreciate how nicely it maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic as specified in the ViSi-Genie Reference Manual.
-An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded with a Workshop4 project running off of 2-4 GB Phison MicroSD Card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded with a Workshop4 project running from 2-4 GB micro-SD card. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
 * Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
@@ -16,9 +16,16 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
 
+## HARDWARE 
+
+* [4D Programming Capable, USB to Serial UART Converter Cable](http://www.4dsystems.com.au/product/4D_Programming_Cable/)
+* [uSD-4GB-Instustrial rated micro-SD card](http://www.4dsystems.com.au/product/uSD_4GB_Industrial/)
+* [uLCD-35DT 3.5" TFT LCD Display Module with Resistive Touch] (http://www.4dsystems.com.au/product/uLCD_35DT_PI/) or other size module
+* [Raspberry Pi 3 - Model B - ARMv8 with 1G RAM] (https://www.adafruit.com/product/3055) or equivalent P2, Broadcomm or Intel Atom type.
+
 ## BRING-UP NOTES 
 
-* Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
+* Build and deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
 * Edit your app's package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
