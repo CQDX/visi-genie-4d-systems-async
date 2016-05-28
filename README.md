@@ -9,11 +9,10 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 * Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display.
 
-* Supports host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app. 
-  Hereafter, the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX is simply referred to as the "Host". 
+* Supports host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app.  
 
-* Can discover of one or more connected serial devices. The singleton class named *Host* creates instances of serially connected device. 
-  For example, the Raspberry Pi 2 has four USB ports and this means potentially four different 4D Systems display modules could be connected to a single Pi host. 
+* Discovers one or more connected displays. The singleton class named *Host* creates instances of serially connected device. 
+  For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
 
@@ -21,7 +20,7 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 * Deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
 
-* Edit your app's package manifest and add the *serialcommunication* capability; otherwise serial communications will fail when you try to connect to the 4D Systems display.
+* Edit your app's package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -36,7 +35,7 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 ## CODE CLIP  
 
-Below is code clip from a Windows IoT headless app:
+Below is code clip from a Windows IoT headless app that shows how to use the *Host.Instance* singleton:
 
 ```C#
 using System;
