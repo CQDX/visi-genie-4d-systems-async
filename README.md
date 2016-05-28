@@ -48,7 +48,7 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 
 * Review and add code clips shown below to your project. 
 
-* Build your C# project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and debug your app.
+* Build your project in Visual Studio, cycle power on Pi 3 (ARM Solution Platform) or equivalent, deploy, and debug your app :)
 
 ## Host.Instance 
 
