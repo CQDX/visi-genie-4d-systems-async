@@ -25,7 +25,7 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 ## Bring-Up Notes 
 
-* Build and deploy your 4D Workshop4 project to your 4D Systems display's uSD card.
+* Build and deploy your 4D Workshop4 project to the display's micro-SD card and then install micron-SD card into display's pannel.
 
 * In Microsoft Visual Studio, use the NuGet Package Manager Console to install this library into your project: 
 
@@ -33,7 +33,7 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 PM> Install-Package ViSiGenie4DSystems.Async.dll
 ```
 
-* Edit the app package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
+* In Microsoft Visual Studio, edit the app package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -44,9 +44,9 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 		</DeviceCapability>
 	</Capabilities>
 ```		
-* Plug the USB programmers cable into the host USB port and connect the other end of the cable into the backside of the display's 5 pins connector.
+* Plug the USB programmers cable into the Pi 3 or equivalent USB port and connect the other end of the cable into the backside of the display's 5 pins connector.
 
-* Build your project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and then run your app.
+* Build your C# hosts project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and then run your app.
 
 ## Code Clip 
 
@@ -75,13 +75,13 @@ namespace DisplayHeadless
         {		
 			var cts = new CancellationTokenSource();
 		
-			//1. Find the connected device's identifier string and hang on to it
+			//1. Find the connected device identifier string and hang on to it
 			Task<List<string>> discoverDeviceIdsTask = Host.Instance.DiscoverDeviceIds();
 			
 			await discoverDeviceIdsTask;
 			 
 			//2. Connect host to 4D Systems display
-			//   In this case, ony one display is connected to the host
+			//   In this case, only one display is connected to the host
 			var deviceId = discoverDeviseIdsTask.Result.First();
 			
 			//Baud rate of host must match 4D Workshop project baud rate
