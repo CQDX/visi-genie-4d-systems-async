@@ -29,9 +29,11 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 2. In Microsoft Visual Studio, use the NuGet Package Manager Console to install this library into your project: 
 
+```
 PM> Install-Package ViSiGenie4DSystems.Async.dll
+```
 
-3. Edit your app's package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
+3. Edit the app package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -42,7 +44,7 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 		</DeviceCapability>
 	</Capabilities>
 ```		
-4. Plug the USB programmers cable into the host's USB port and connect the other end of the cable to display's backside 5 pins connector.
+4. Plug the USB programmers cable into the host USB port and connect the other end of the cable into the backside of the display's 5 pins connector.
 
 ## Code Clip 
 
