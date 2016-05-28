@@ -11,7 +11,7 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 
 * Host application development scenarios include the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app.  
 
-* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates instances of serially devices. 
+* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages serial device instances. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
