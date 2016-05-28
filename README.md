@@ -48,7 +48,7 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 
 * Build your C# hosts project in Visual Studio, cycle power on Pi 3 or equivalent, deploy, and then run your app.
 
-## Host.Instance Exemplar
+## Host.Instance 
 
 The exemplar below is from a Windows IoT headless app that shows how-to use the *Host.Instance* singleton:
 
@@ -75,40 +75,38 @@ namespace DisplayHeadless
         {		
 			var cts = new CancellationTokenSource();
 		
-			//1. Find the connected device identifier string and hang on to it
+			//1. App find the connected device identifier string and hang on to it
 			Task<List<string>> discoverDeviceIdsTask = Host.Instance.DiscoverDeviceIds();
 			
 			await discoverDeviceIdsTask;
 			 
-			//2. Connect host to 4D Systems display
-			//   In this case, only one display is connected to the host
+			//2. App connects host -to- the 4D Systems display. In this case, only one display is connected to the host
 			var deviceId = discoverDeviseIdsTask.Result.First();
 			
-			//Baud rate of host must match 4D Workshop project baud rate
+			//Host baud must match 4D Workshop project baud rate, else Connect will throw
 			var portDef = new PortDef(BaudRate.Bps115200);
 			Task connectTask = Host.Instance.Connect(deviceId, portDef);
 			await connectTask;
 
-			//3. Host start listening for display events. 
-			//   You need to write the handler method; i.e., TODO...
+			//3. App start listening for display sent from the display. Developer writes the handler method...
 			await Host.Instance.StartListening(deviceId,
-												ReportEventMessageHandler.ReportEventMessageHandler.Handler,
-												MyReportObjectClass.ReportObjectStatusMessageHandler.Handler);
+											   ReportEventMessageHandler.Handler,
+											   ReportObjectStatusMessageHandler.Handler);
 		
-			//4. Change to form 0 on display per 4D Workshop4 project layout...
+			//4. Change to form 0 on display per a particular 4D Workshop4 project layout.  
 			const int displayFormId = 0;
 			var writeObjectMessage = new WriteObjectValueMessage(ObjectType.Form, displayFormId);
 			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeObjectMessage, cts.Token);
 
-			//5. Write string message to display per 4D Workshop4 project layout...
+			//5. Write string message to display per a particular 4D Workshop4 project layout...
 			const int displayStringId = 0;
 			var writeStringMessage = new WriteStringASCIIMessage(displayStringId, "Hello 4D Systems via Windows IoT!");
 			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeStringMessage, cts.Token);
 		
-			//5. Host stops listening to display events
+			//6. App stops listening to display events
 		    Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId,
-										ReportEventMessageHandler.ReportEventMessageHandler.Handler,
-										MyReportObjectClass.ReportObjectStatusMessageHandler.Handler);
+										ReportEventMessageHandler.Handler,
+										ReportObjectStatusMessageHandler.Handler);
     
             _defferal.Complete();
         }        
@@ -172,7 +170,7 @@ namespace DisplayIO
                                    case 1:
                                        {
 										   //TODO: user activated Form 1 on display
-                                           break; //-----
+                                           break; 
                                         }
                                 }//END OF SWITCH
 
