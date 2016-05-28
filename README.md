@@ -7,9 +7,9 @@ An example of a resistive touch display is the 4.3" DIABLO16 Display Module that
 
 * Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
-* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
+* Applications requiring a non-primary display can use a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX as their host.  
 
-* Host application development scenarios include the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX.  
+* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
 
 * Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages serial device instances. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
