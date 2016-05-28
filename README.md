@@ -7,11 +7,11 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 
 * Windows IoT makers and commercial builders will appreciate how nicely this library maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic data structures and protocols specificated in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
 
-* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display.
+* Headed or headless Windows IoT Core applications can be accompanied by one or more serial port connected display(s).
 
-* Supports host application development on the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app.  
+* Host application development scenarios include the Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX app.  
 
-* Discovers one or more connected displays. The singleton class named *Host* creates instances of serially connected device. 
+* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates instances of serially devices. 
   For example, the Raspberry Pi 2 has four USB ports and this means potentially four different display modules could be found. 
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
