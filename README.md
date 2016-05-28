@@ -16,18 +16,24 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
   
 * Supports listening for ViSi Genie Report Events and Report Objects. For example, the user presses a menu button object on the touch display.  
 
-## HARDWARE 
+## Hardware 
 
 * [4D Programming Capable, USB to Serial UART Converter Cable](http://www.4dsystems.com.au/product/4D_Programming_Cable/)
-* [uSD-4GB-Instustrial rated micro-SD card](http://www.4dsystems.com.au/product/uSD_4GB_Industrial/)
+* [uSD-4GB-Instustrial rated micro-SD card](http://www.4dsystems.com.au/product/uSD_4GB_Industrial/). Needs to be Phison. Industrial grade is optional. 
 * [uLCD-35DT 3.5" TFT LCD Display Module with Resistive Touch] (http://www.4dsystems.com.au/product/uLCD_35DT_PI/) or other size module
 * [Raspberry Pi 3 - Model B - ARMv8 with 1G RAM] (https://www.adafruit.com/product/3055) or equivalent P2, Broadcomm or Intel Atom type.
 
-## BRING-UP NOTES 
+## Bring-Up Notes 
 
-* Build and deploy your 4D Workshop4 project to your 4D Systems display's uSD card. 
+1. Build and deploy your 4D Workshop4 project to your 4D Systems display's uSD card.
 
-* Edit your app's package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
+2. In Microsoft Visual Studio, use nuget to add this library to your project as follows: 
+
+```Package Manager Console
+PM> Install-Package ViSiGenie4DSystems.Async.dll
+```
+
+3. Edit your app's package manifest and add the *serialcommunication* capability. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -38,9 +44,9 @@ An example of a touch display is the 4.3" DIABLO16 Display Module that is loaded
 		</DeviceCapability>
 	</Capabilities>
 ```		
-* Plug the 4D Systems Silabs USB programmers cable into the host's USB port and connect the other end of the cable to display's backside 5 pins connector.
+4. Plug the USB programmers cable into the host's USB port and connect the other end of the cable to display's backside 5 pins connector.
 
-## CODE CLIP  
+## Code Clip 
 
 Below is code clip from a Windows IoT headless app that shows how to use the *Host.Instance* singleton:
 
