@@ -30,10 +30,10 @@ This is a C# async class library that support Windows IoT apps requiring a 4D Sy
 * In Microsoft Visual Studio, use the NuGet Package Manager Console to install the library into your project: 
 
 ```
-PM> Install-Package ViSiGenie4DSystems.Async.dll
+PM> Install-Package ViSiGenie.4DSystems.Async
 ```
 
-* In Microsoft Visual Studio, edit the project's Package.appmanifest and add the capability to do *serialcommunication*. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
+* In Microsoft Visual Studio, edit the project's Package.appmanifest and add a capability to support *serialcommunication*. If deviceCapability is not configured, then serial device communications will fail when *Host* tries to connect to the 4D Systems display.
 
 ```XML
 	<Capabilities>
@@ -44,11 +44,11 @@ PM> Install-Package ViSiGenie4DSystems.Async.dll
 		</DeviceCapability>
 	</Capabilities>
 ```		
-* Plug the USB programmers cable into the Pi 3 or equivalent USB port and connect the other end of the cable into the backside of the display's 5 pins connector.
+* Plug the USB programmers cable into the USB port on Pi 3 or equivalent. Connect the other end of the cable into the backside of the display's 5 pins connector.
 
 * Review and add code clips shown below to your project. 
 
-* Build your project in Visual Studio, cycle power on Pi 3 (ARM Solution Platform) or equivalent, deploy, and debug your app :)
+* Build your ARM project in Visual Studio, cycle power on Pi 3. Then deploy and debug your app :)
 
 ## Host.Instance 
 
