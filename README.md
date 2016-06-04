@@ -2,7 +2,7 @@
 
 # About
 
-This is a C# async class library that support Windows IoT apps requiring serial communications to one or more 4D Systems display(s). An IoT scenario might be a power measurement meter app that requires a resistive touch 4.3" DIABLO16 Display Module for user interactions. It is assumed the developer has designed a user experience in the 4D Systems Workshop4 IDE and has compiled and deployed their project to the display's micro-SD card. Embedded system functionality can then be addressed using a Windows IoT host like an ARM Pi 3, Qualcomm or Intel SOC. The host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+This is a C# async class library that support Windows IoT apps requiring serial communications to one or more 4D Systems display(s). An IoT scenario might be a power measurement meter app that requires a resistive touch 4.3" DIABLO16 Display Module for user interactions. It is assumed the developer has designed a user experience in the 4D Systems Workshop4 IDE that is deployed to the display's micro-SD card. Embedded system functionality can then be implemented using a Windows IoT host like an ARM Pi 3, Qualcomm or Intel SOC. The IoT host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
 
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/TouchDisplay.jpg">
 
@@ -13,7 +13,7 @@ This is a C# async class library that support Windows IoT apps requiring serial 
 
 * Connects and discovers one or more displays to Headed or Headless Windows IoT applications.
    
-* Queues all incomming ViSi Genie Report Events and Report Objects that originate from the display. The library forwards display events as C# async event for the app for handling. For instance, the user presses a menu button object on the resistive touch display.  
+* Queues all incomming ViSi Genie Report Events and Report Objects that originate from the display. The library forwards display events as C# async event for the app to handle. For instance, the user presses a menu button object on the resistive touch display.  
 
 ## Hardware 
 
