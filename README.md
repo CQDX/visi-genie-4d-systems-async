@@ -51,7 +51,7 @@ PM> Install-Package ViSiGenie.4DSystems.Async
 
 ## Class Relationships
 
-The singleton class named *Host* creates and manages the lifetime of serial device instances. For example, a Raspberry Pi 2 could have four different display modules to monitor various subsystems. 
+The singleton class named *Host* creates and manages the lifetime of serial device instances. For example, a Raspberry Pi 2 could have four different display modules, where each monitor is dedicated to specific subsystem monitoring and related interactive control. 
 
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/ClassDiagram.png">
 
