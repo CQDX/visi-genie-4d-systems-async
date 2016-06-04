@@ -23,7 +23,7 @@ namespace ViSiGenie4DSystems.Async.Message
     /// (0x05, Object-ID, Object Index, Value {msb}, Value {lsb}, checksum). 
     /// </summary>
     public class ReadObjectStatusMessage
-        : WriteMessage,
+        : ReadMessage,
           IReadObjectStatusMessage,
           ICalculateChecksum,
           IToHexString,

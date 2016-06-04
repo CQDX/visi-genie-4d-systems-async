@@ -74,7 +74,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// UWP resource that provides serial device communications
         /// </summary>
         private SerialDevice SerialDevice { get; set; }
-
+        -
         /// <summary>
         /// The response received from display was successfull
         /// </summary>
