@@ -2,19 +2,19 @@
 
 # About
 
-This is a C# async class library that support Windows IoT apps requiring a 4D Systems display. A typical IoT scenario might be a power meter built using a resistive touch 4.3" DIABLO16 Display Module loaded with a Workshop4 user interface project executing from a 4 GB micro-SD card. Leveraging Windows IoT core, an ARM, Qualcomm or Intel SOC can be connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+This is a C# async class library that support Windows IoT apps requiring a 4D Systems display. An IoT scenario might be an embedded power measurement meter built using a resistive touch 4.3" DIABLO16 Display Module loaded with a Workshop4 user interface project executing from a 4 GB micro-SD card. Leveraging Windows IoT core, an ARM, Qualcomm or Intel SOC can be connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+
+## Interfacing with the 7.0" TFT LCD using ViSiGenie4DSystems.Async Lib
+<img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/TouchDisplay.png">
 
 * Directly maps the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic to Interfaces implemented as C# Message classes.
   See [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf for data structures and command/event protocols.
 
 * Intended for applications requiring a non-primary display for a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX host.  
 
-* Connects one or more displays to the Headed or Headless Windows IoT Core application.
-
-* Discovers one or more connected 4D Systems displays. The singleton class named *Host* creates and manages the lifetime of serial device instances. 
-  For example, a Raspberry Pi 2 with four USB ports potentially could have four different display modules to monitor various subsystems of an embedded device and in turn offer user interactive control. 
-  
-* Queues ViSi Genie Report Events and Report Objects received from the display. Asynchronously, the library sends out an equivalent custom C# async event for handling. For instance, the user presses a menu button object on the resistive touch display.  
+* Connects and discovers one or more displays to Headed or Headless Windows IoT applications.
+   
+* Queues all incomming ViSi Genie Report Events and Report Objects originating from the display. The library sends C# async event for the app to handle. For instance, the user presses a menu button object on the resistive touch display.  
 
 ## Hardware 
 
@@ -49,6 +49,12 @@ PM> Install-Package ViSiGenie.4DSystems.Async
 * Review and add code clips shown below to your project. 
 
 * Build your ARM project in Visual Studio, cycle power on Pi 3. Then deploy and debug your app :)
+
+## Class Relationships
+
+The singleton class named *Host* creates and manages the lifetime of serial device instances. For example, a Raspberry Pi 2 with four USB ports potentially could have four different display modules to monitor various subsystems of an embedded device and in turn offer user interactive control. 
+
+<img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/ClassDiagram.png">
 
 ## Host.Instance 
 
