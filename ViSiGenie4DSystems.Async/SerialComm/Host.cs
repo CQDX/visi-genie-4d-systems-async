@@ -17,16 +17,14 @@ using ViSiGenie4DSystems.Async.Event;
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
     /// <summary>
-    /// A class that enables the client application to communicate with one or more 4D System display(s) 
-    /// connected via a serial device. 
+    /// Enabled a client application to communicate with one or more 4D System display(s) connected via a serial device. 
     /// </summary>
     /// <remarks>
-    /// <see cref="Host"/> is a singleton class that creates compatible ViSi Genie compatible read events. This class
+    /// <see cref="Host"/> is a sealed singleton class that creates compatible ViSi Genie compatible read events. This class
     /// takes care of the setting up the subscription by using the client app's <see cref="EventHandler{DeferrableDisplayEventArgs}"/>
-    /// Each connection to the non-primary 4D Systems display should use the Silabs USB programmers cable that 
-    /// is connected from the host USB port to display's backside 5 pins connector.
+    /// Physically, a connection is required from the host USB port to display's backside 5 pins connector.
     /// </remarks>
-    public class Host
+    public sealed class Host
     {
 
         #region CONSTRUCTION
@@ -47,7 +45,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
 
         /// <summary>
-        /// Initializes a new <see cref="Host"/>.
+        /// Initializes the one and only <see cref="Host"/>.
         /// </summary>
         private Host()
         {
@@ -61,11 +59,11 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         #region SERIAL COMMUNICATION DEVICE DISCOVERY
         /// <summary>
         /// Finds 1 to N serial device displays, where each display is identified by string identifier. 
-        /// In order for the client app do subsequent calls to the class method, the clien app must 
-        /// hold onto returned list of string Ids returned from this method..
+        /// In order for the client app do use subsequent class method, the client app must 
+        /// hold onto the returned list of string Ids returned from this method.
         /// 
-        /// TODO: Client application must add the DeviceCapability to the project's Package.appxmanifest file.
-        /// Capability is defined once and only once in your app's Package.appxmanifest as follows:
+        /// TODO: Client application must add the DeviceCapability to their project's Package.appxmanifest file.
+        /// Capability must be defined only once in your app's Package.appxmanifest as follows:
         /// 
         /// <Capabilities>
         ///     <DeviceCapability Name="serialcommunication">
@@ -76,7 +74,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </Capabilities>
         /// 
         /// <returns>
-        /// Returns a <see cref="Task{List{string}}"/> contains device indentifiers of connected serial device displays.
+        /// Returns a <see cref="Task{List{string}}"/> that contains device indentifiers logically representing serial device displays.
         /// </returns>
         public async Task<List<string>> DiscoverDeviceIds()
         {
@@ -100,9 +98,9 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
         #endregion
 
-        #region SERIAL COMMUNICATION DEVICE CONNECTION
+        #region DEVICE CONNECTION LIFETIME
         /// <summary>
-        /// Given a deviceID and portDef, the host is connected to a particular serial device display.
+        /// Given a deviceID and client port definition, the host is connected to a particular serial device display.
         /// 
         /// PRECONDITION: DiscoverDeviceIds() was successful
         /// 
@@ -123,6 +121,47 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 throw new NullReferenceException();
             }
             await serialDeviceDisplay.Connect(deviceId, portDef).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Given a deviceID, the host is disconnected from a particular serial device display.
+        /// The maintained reference to the serial device is surrendered and all outstanding event subscriptions are cleared.
+        /// 
+        /// PRECONDITION: DiscoverDeviceIds() was successful
+        /// 
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display object.
+        /// </param>
+        /// <returns>Returns a <see cref="Task"/>.</returns>
+        public async Task Disconnect(string deviceId)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                Debug.WriteLine(string.Format("Unable to find deviceId {0}", deviceId));
+                throw new NullReferenceException();
+            }
+
+            //execute in thread pool thread
+            await Task.Run(() =>
+            {
+                this.CancelAllTokenSources(deviceId);
+
+                if (this.ReportEventMessageSubscriptions.ContainsKey(deviceId))
+                {
+                    this.ReportEventMessageSubscriptions[deviceId].RemoveAll();
+                    this.ReportEventMessageSubscriptions.Remove(deviceId);
+                }
+
+                if (this.ReportObjectStatusMessageSubscriptions.ContainsKey(deviceId))
+                {
+                    this.ReportObjectStatusMessageSubscriptions[deviceId].RemoveAll();
+                    this.ReportObjectStatusMessageSubscriptions.Remove(deviceId);
+                }
+
+                this.RemoveDevice(deviceId);
+            });
         }
         #endregion
 
@@ -153,28 +192,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 throw new NullReferenceException();
             }
 
-            //Set up required subscriptions (not an option)
+            //Set up client subscriptions 
             this.SubscribeToReportEventMessages(deviceId, reportEventMessageHandler);
             this.SubscribeToReportObjectStatusMessages(deviceId, reportObjectStatusMessageHandler);
 
-            var tasks = new List<Task>();
-
-            var rem = this.ReportEventMessageSubscriptions[deviceId];
-            Task taskDequeueReportEventMessages = serialDeviceDisplay.DequeueReportEventMessages(rem, serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Token);
-            tasks.Add(taskDequeueReportEventMessages);
-
-            var rosm = this.ReportObjectStatusMessageSubscriptions[deviceId];
-            Task taskDequeueReportObjectStatusMessages = serialDeviceDisplay.DequeueReportObjectStatusMessages(rosm, serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Token);
-            tasks.Add(taskDequeueReportObjectStatusMessages);
-
-            Task taskMessageReceiver = serialDeviceDisplay.Receive(serialDeviceDisplay.ReceiveCancellationTokenSource.Token);
-            tasks.Add(taskMessageReceiver);
-
-            Debug.WriteLine(string.Format("Starting internal task listeners for device {0}", deviceId));
-
-            Task taskWhenAll = Task.WhenAll(tasks.ToArray());
-
-            await taskWhenAll;
+            //Link subscriptions to internal queues of the particular device instance
+            await this.LinkQueuesToSubscriptions(deviceId).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -192,40 +215,33 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// A <see cref="EventHandler"/> currently receiving <see cref="ReportEventMessage"/>
         /// </param>
         /// <returns></returns>
-        public void StopListening(string deviceId, 
+        public async Task StopListening(string deviceId, 
             EventHandler<DeferrableDisplayEventArgs> reportEventMessageHandler, 
             EventHandler<DeferrableDisplayEventArgs> reportObjectMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                Debug.WriteLine(string.Format("Cannot stop listening because device {0} was not found.", deviceId));
+                Debug.WriteLine(string.Format("Device {0} was not found.", deviceId));
                 return;
             }
 
             try
             {
-                //End subscriptions 
-                this.UnsubscribeFromReportEventMessages(deviceId, reportEventMessageHandler);
-                this.UnsubscribeFromReportObjectStatusMessages(deviceId, reportObjectMessageHandler);
+                await Task.Run(() =>
+                {
+                    //Cancel active token sources
+                    this.CancelAllTokenSources(deviceId);
 
-                Debug.WriteLine(string.Format("Cancelling DequeueReportEvent Task indentified by {0}", deviceId));
-                serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Cancel();
-
-                Debug.WriteLine(string.Format("Cancelling DequeueReportObjectStatusMessages Task indentified by {0}", deviceId));
-                serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Cancel();
-
-                Debug.WriteLine(string.Format("Cancelling Receive Task indentified by {0}", deviceId));
-                serialDeviceDisplay.ReceiveCancellationTokenSource.Cancel();
+                    //End subscriptions 
+                    this.UnsubscribeFromReportEventMessages(deviceId, reportEventMessageHandler);
+                    this.UnsubscribeFromReportObjectStatusMessages(deviceId, reportObjectMessageHandler);
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(String.Format("Cancel threw: {0}", ex.Message));
                 throw ex;
-            }
-            finally
-            {
-                this.SerialDeviceDisplays.Remove(deviceId);
             }
         }
         #endregion
@@ -253,7 +269,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </returns>
         public async Task<Acknowledgement> Send(string deviceId, WriteMessage writeMessage, CancellationToken cancellationToken)
         {
-            return await this.Send(deviceId, writeMessage.ToByteArray(), cancellationToken).ConfigureAwait(false);
+            return await this.Send(deviceId, writeMessage.ToByteArray(), cancellationToken);
         }
 
         /// <summary>
@@ -312,7 +328,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
 
             var ehc = new DisplayableEvent();
-            ehc.DisplayEvent += handler;
+            ehc.Add(handler);
 
             this.ReportEventMessageSubscriptions.Add(deviceId, ehc);         
         }
@@ -325,7 +341,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 Debug.WriteLine(string.Format("UnsubscribeFromReportEventMessages failed to find device {0}", deviceId));
                 throw new NullReferenceException();
             }
-            this.ReportEventMessageSubscriptions[deviceId].DisplayEvent -= handler;
+            this.ReportEventMessageSubscriptions[deviceId].Remove(handler);
         }
 
         private void SubscribeToReportObjectStatusMessages(string deviceId, EventHandler<DeferrableDisplayEventArgs> handler)
@@ -338,7 +354,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
 
             var ehc = new DisplayableEvent();
-            ehc.DisplayEvent += handler;
+            ehc.Add(handler);
 
             this.ReportObjectStatusMessageSubscriptions.Add(deviceId, ehc);
         }
@@ -352,7 +368,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 throw new NullReferenceException();
             }
 
-            this.ReportObjectStatusMessageSubscriptions[deviceId].DisplayEvent -= handler;
+            this.ReportObjectStatusMessageSubscriptions[deviceId].Remove(handler);
         }
         #endregion
 
@@ -379,6 +395,87 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 return serialDeviceDisplay;
             }
             return null;
+        }
+
+        // <summary>
+        /// Given a valid deviceId key string, this method removes <see cref="SerialDeviceDisplay"/> instance.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display object.
+        /// </param>
+        private void RemoveDevice(string deviceId)
+        {
+            if (this.SerialDeviceDisplays.ContainsKey(deviceId))
+            {
+                this.SerialDeviceDisplays.Remove(deviceId);
+            }
+        }
+
+        // <summary>
+        /// Given a valid deviceId key string, this method seeds links queues to client subscriptions for a <see cref="SerialDeviceDisplay"/> instance.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display object.
+        /// </param>
+        private async Task LinkQueuesToSubscriptions(string deviceId)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                Debug.WriteLine(string.Format("Cannot create cancellation token sources because device {0} was not found", deviceId));
+                throw new NullReferenceException();
+            }
+
+            var tasks = new List<Task>();
+
+            var rem = this.ReportEventMessageSubscriptions[deviceId];
+            Task taskDequeueReportEventMessages = serialDeviceDisplay.DequeueReportEventMessages(rem, serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Token);
+            tasks.Add(taskDequeueReportEventMessages);
+
+            var rosm = this.ReportObjectStatusMessageSubscriptions[deviceId];
+            Task taskDequeueReportObjectStatusMessages = serialDeviceDisplay.DequeueReportObjectStatusMessages(rosm, serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Token);
+            tasks.Add(taskDequeueReportObjectStatusMessages);
+
+            Task taskMessageReceiver = serialDeviceDisplay.Receive(serialDeviceDisplay.ReceiveCancellationTokenSource.Token);
+            tasks.Add(taskMessageReceiver);
+
+            Debug.WriteLine(string.Format("Starting internal task listeners for device {0}", deviceId));
+
+            Task taskWhenAll = Task.WhenAll(tasks.ToArray());
+
+            await taskWhenAll;
+        }
+
+        // <summary>
+        /// Given a valid deviceId key string, this cancels internal tasks used by the <see cref="SerialDeviceDisplay"/> instance.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display object.
+        /// </param>
+        private void CancelAllTokenSources(string deviceId)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                Debug.WriteLine(string.Format("Cannot cancel token sources because device {0} was not found", deviceId));
+                throw new NullReferenceException();
+            }
+
+            try
+            { 
+                serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine(string.Format("Cancelled DequeueReportEvent Task indentified by {0}", deviceId));
+
+                serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine(string.Format("Cancelled DequeueReportObjectStatusMessages Task indentified by {0}", deviceId));
+
+                serialDeviceDisplay.ReceiveCancellationTokenSource.Cancel();
+                Debug.WriteLine(string.Format("Cancelled Receive Task indentified by {0}", deviceId));
+            }
+            catch (TaskCanceledException tce)
+            {
+                Debug.WriteLine(String.Format("CancelAllTokenSource caught {0}", tce.Message));
+            }
         }
         #endregion
     }

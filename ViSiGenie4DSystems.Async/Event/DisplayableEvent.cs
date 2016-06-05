@@ -12,9 +12,33 @@ namespace ViSiGenie4DSystems.Async.Event
         public DisplayableEvent()
         {
             this.DisplayEvent = null;
+            this.ActiveDelegates = new List<EventHandler<DeferrableDisplayEventArgs>>();
         }
 
-        public event EventHandler<DeferrableDisplayEventArgs> DisplayEvent;
+        private List<EventHandler<DeferrableDisplayEventArgs>> ActiveDelegates { get; set; }
+
+        private event EventHandler<DeferrableDisplayEventArgs> DisplayEvent;
+
+        public void Add(EventHandler<DeferrableDisplayEventArgs> handler)
+        {
+            this.DisplayEvent += handler;
+            ActiveDelegates.Add(handler);
+        }
+
+        public void Remove(EventHandler<DeferrableDisplayEventArgs> handler)
+        {
+            this.DisplayEvent -= handler;
+            ActiveDelegates.Remove(handler);
+        }
+
+        public void RemoveAll()
+        {
+            foreach (var eventHandler in this.ActiveDelegates)
+            {
+                DisplayEvent -= eventHandler;
+            }
+            this.ActiveDelegates.Clear();
+        }
 
         public async Task Raise(ReadMessage readMessage)
         {

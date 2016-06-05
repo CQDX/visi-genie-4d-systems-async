@@ -8,9 +8,9 @@ using Windows.Foundation;
 namespace ViSiGenie4DSystems.Async.Event
 {
     /// <summary>
-    /// Based on article, Custom async events in C#
+    /// See Custom Async Events in C#
     /// By Tim Greenfield
-    /// September 3, 2015 by 
+    /// September 3, 2015
     /// https://programmerpayback.com/2015/09/03/custom-async-events-in-c/
     /// 
     /// </summary>

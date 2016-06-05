@@ -18,10 +18,9 @@ using ViSiGenie4DSystems.Async.Event;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
-    /// <summary>
-    /// A plurality of async tasks that deal with a serial device instance.
+    /// <summary>.
     /// This class is carries out the essential I/O requirements needed to 
-    /// communicate with one 4D Systems Display.
+    /// communicate with one 4D Systems brand display.
     /// </summary>
     public sealed class SerialDeviceDisplay
     {
@@ -74,7 +73,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// UWP resource that provides serial device communications
         /// </summary>
         private SerialDevice SerialDevice { get; set; }
-        -
+        
         /// <summary>
         /// The response received from display was successfull
         /// </summary>
@@ -86,24 +85,24 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         private readonly byte NAK;
 
         /// <summary>
-        /// Synchronize one and only SEND of N bytes to the display.
+        /// Synchronize one and only send message of N bytes to the display.
         /// </summary>
         private SemaphoreSlim SendSemaphore { get; set; }
 
         /// <summary>
-        /// Concurrent FIFO of responses received from display
+        /// Concurrent FIFO representation of inbound responses received from the connected display
         /// </summary>
         private ConcurrentQueue<byte> AckNakQueue { get; set; }
 
         /// <summary>
         /// The default collection type for BlockingCollection<T> is ConcurrentQueue<T>.
-        /// Concurrent FIFO of ReportEventMessage objects received from display.
+        /// Concurrent FIFO representation of ReportEventMessage objects received from the connected display.
         /// </summary>
         private ConcurrentQueue<ReportEventMessage> ReportEventMessageQueue { get; set; }
 
         /// <summary>
         /// The default collection type for BlockingCollection<T> is ConcurrentQueue<T>
-        /// Concurrent FIFO of ReportObjectStatusMessage objects received from display
+        /// Concurrent FIFO representatioin of ReportObjectStatusMessage objects received from the connected display.
         /// </summary>
         private ConcurrentQueue<ReportObjectStatusMessage> ReportObjectStatusMessageQueue { get; set; }
 
@@ -112,7 +111,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         #region Connect to Serial Device
         /// <summary>
         /// Connects the serial device to the 4D Systems display per client specified
-        /// DeviceInformation unique Id and the 4D Display's project PortDef (Baud ect...)
+        /// DeviceInformation unique Id and the 4D Display's project PortDef, which specifies Baud rate.
         /// </summary>
         /// <param name="deviceInformationId"></param>
         /// <param name="portDef"></param>
@@ -159,7 +158,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region SEND MESSAGE FROM HOST TO DISPLAY 
         /// <summary>
-        /// A task sending 1 to N byte(s) to the 4D Systems display via this serial device implementation.
+        /// A task dedicated to sending 1 to N byte(s) from the host to 4D Systems display via this serial device implementation.
         /// </summary>
         /// <param name="sendMessage"></param>
         /// <param name="cancellationToken"></param>
@@ -169,13 +168,14 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             Acknowledgement acknowledgement = Acknowledgement.NAK;
             try
             {
-                //Wait to enter semaphore (in process)
+                //Wait to enter semaphore, which is an in-process type semaphore
                 await this.SendSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false); ;
                
                 Task<uint> sendBytesTask = this.SendBytes(sendMessage, cancellationToken);
                 Task<Acknowledgement> dequeueResponseTask = this.DequeueResponse(cancellationToken);
                 Task.WaitAll(sendBytesTask, dequeueResponseTask);
 
+                //Good debug point here...
                 //Debug.WriteLine(string.Format("WROTE {0} BYTES", sendBytesTask.Result));  
 
                 acknowledgement = dequeueResponseTask.Result;
@@ -207,9 +207,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
 
         /// <summary>
-        /// An implementation task that works on sending bytes out to the 4D Display.
-        /// See IChecksum interface, which enforces that all Message object know how 
-        /// express their physical byte[] representation.
+        /// An implementation task that is dedicated to sending byte packages out to the connected 4D Display.
         /// </summary>
         /// <param name="sendMessage"></param>
         /// <param name="cancellationToken"></param>
@@ -241,7 +239,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region RECEIVE MESSAGE FROM DISPLAY TO HOST
         /// <summary>
-        /// A task for receiving messages from the 4D Display 
+        /// A task for receiving messages originating from the 4D Display. 
+        /// For example, the user touches an object on the display. 
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -283,7 +282,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         /// <summary>
         /// A task that works on decoding bytes received from display and
-        /// then enqueues to approapriate ACK, NACK, REPORT_EVENT or REPORT_OBJ queue.
+        /// then enqueues to approapriate type of queue.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -408,6 +407,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
 
         #region EVENT DEQUEUE
+        /// <summary>
+        /// Takes first and send to subscriber of ReportEventMessage objects.
+        /// </summary>
+        /// <param name="eventHandlerContainer"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task DequeueReportEventMessages(DisplayableEvent eventHandlerContainer, CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportEventMessages Task");
@@ -428,6 +433,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             Debug.WriteLine("Exiting DequeueReportEventMessages Task");
         }
 
+        /// <summary>
+        /// Takes first and send to subscriber of ReportObjectStatusMessage objects.
+        /// </summary>
+        /// <param name="eventHandlerContainer"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task DequeueReportObjectStatusMessages(DisplayableEvent eventHandlerContainer, CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportObjectStatusMessages Task");
@@ -450,7 +461,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region DEQUEUE ACK OR NAK		
         /// <summary>
-        /// A task to dequeue a previously received ACK or NAK from the 4D Display.
+        /// Takes first and returns acknowledgent.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
