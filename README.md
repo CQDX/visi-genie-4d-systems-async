@@ -6,8 +6,7 @@ This is a C# async class library that support Windows IoT apps requiring serial 
 
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/TouchDisplay.jpg">
 
-* Directly maps the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic to Interfaces implemented as C# Message classes.
-  See [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf for data structures and command/event protocols.
+* Provides an API that maps to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic idioms specified in the [ViSi-Genie Reference Manual]: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf. This reference manual defines language independent  message data structures and command/event protocols.
 
 * Intended for applications requiring a non-primary display for a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX host.  
 

@@ -106,7 +106,8 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="app.manifest" />
     <None Include="AsyncConsulting.pfx" />
-    <None Include="Packaging\ViSiGenie4DSystems.Async.dll.1.0.0.nupkg" />
+    <None Include="Packaging\ViSiGenie4DSystems.Async.1.0.0.nupkg" />
+    <None Include="Packaging\ViSiGenie4DSystems.Async.1.1.0.nupkg" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
