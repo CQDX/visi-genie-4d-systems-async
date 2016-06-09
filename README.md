@@ -2,7 +2,7 @@
 
 # About
 
-This is a C# async class library that support Windows IoT apps requiring serial communications to one or more 4D Systems display(s). An IoT scenario might be a power measurement meter app that requires a resistive touch 4.3" DIABLO16 Display Module for user interactions. It is assumed the developer has designed a user experience in the 4D Systems Workshop4 IDE that is deployed to the display's micro-SD card. Embedded system functionality can then be implemented using a Windows IoT host like an ARM Pi 3, Qualcomm or Intel SOC. The IoT host is connected to the display using a Silicon Labs brand, CP2102, USB to Serial UART Bridge Converter Cable.
+This is a C# async class library that support Windows IoT apps that require serial communication to a 4D Systems display. An IoT scenario could be a Windows IoT power measurement meter app that needs listen for user events originating from a resistive touch 4.3" DIABLO16 Display Module. It is assumed the developer has designed a user experience using the 4D Systems Workshop4 IDE and deployed the UX to the display's micro-SD card. The Windows IoT host such as a Raspberry Pi 2/3, Dragonboard 410c or Minnowboard Max is connected to the 4D Systems display module using a Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable. Developers will notice the singleton class named Host, in the namespace ViSiGenie4DSystems.Async.SerialComm, manages the lifetime I/O of one or more serially connected displays.
 
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/TouchDisplay.jpg">
 
