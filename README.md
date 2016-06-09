@@ -110,10 +110,13 @@ namespace DisplayHeadless
 			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeStringMessage, cts.Token);
 		
 			//6. App stops listening to display events
-		    Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId,
+		    await Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId,
 										ReportEventMessageHandler.Handler,
 										ReportObjectStatusMessageHandler.Handler);
     
+			//7. Disconect from display by giving up the serial device to garbarge collection
+			await Host.Instance.Disconnect(deviceId);
+
             _defferal.Complete();
         }        
     }
@@ -140,11 +143,12 @@ namespace DisplayIO
             using (var deferral = e.GetDeferral())
             {
                 //Run task message cracker in thread pool thread
-                await Task.Run(() =>
+                await Task.Run( async () =>
                {
                    ReportEventMessage hotReportEventMessage = (ReportEventMessage)sender;
 
-				   //TODO: Switch on your specific Workshop 4D project identifiers, for example,
+				   //TODO: Switch on specific Workshop 4D project identifiers
+				   //EXAMPLE SHOWS HANDLING VARIOUS 4D BUTTONS
                    switch (hotReportEventMessage.ObjectType)
                    {
                        case ObjectType.Button4D:
@@ -171,11 +175,13 @@ namespace DisplayIO
                                    case 0:
                                        {
                                            //TODO: user activated Form 0 on display
+										   //WARNING: DON'T BLOCK
                                            break; 
                                         }
                                    case 1:
                                        {
-										   //TODO: user activated Form 1 on display...
+										   //TODO: user activated Form 1 on display
+										   //WARNING: DON'T BLOCK
                                            break; 
                                         }
                                 }//END OF SWITCH
@@ -189,13 +195,15 @@ namespace DisplayIO
                                {
                                    case 0:
                                        {
-										   // i.e., maybe shutdown headless app here
+										   //EXAMPLE:  shutdown headless app 
+										   ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, new TimeSpan(0));
                                            break;
                                        }
 
                                    case 5:
                                        {
-									       // i.e., maybe reboot headless app here
+									       //EXAMPLE: reboot headless app 
+										   ShutdownManager.BeginShutdown(ShutdownKind.Restart, new TimeSpan(0));
                                            break;
                                        }
                                }
@@ -231,7 +239,7 @@ namespace DisplayIO
         {
             using (var deferral = e.GetDeferral())
             {
-                await Task.Run(() =>
+                await Task.Run( () =>
                 {
                     ReportObjectStatusMessage hotReportObjectMessage = (ReportObjectStatusMessage)sender;
              
