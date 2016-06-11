@@ -1,29 +1,25 @@
 ## ViSiGenie4DSystems.Async
 
 ### About
-
-This is a C# async style class library that implements the ViSi Genie Serial Communication Protocol thereby giving Windows IoT apps the ability to incorporate a 4D Systems display in their solution-space. Version 1.2.0 now uses Reactive Extensions - Main Library 2.3.0-beta2, which contains packages compatible with UAP. RX is needed to support Report Events that originate on the display and subsequently needed to be handled by the headless or headed app.
-
-An IoT scenario could be an app that handles user events originating from a resistive touch 4.3" DIABLO16 Display Module. It is assumed the developer has designed a user experience in the 4D Systems Workshop4 IDE that is deployed to the display's micro-SD card. The Windows IoT host running on a Raspberry Pi 2, 3, Dragonboard 410c or Minnowboard Max is connected to the 4D Systems display module via a Silicon Labs CP2102 USB to Serial UART Bridge Converter cable. 
-To get started, use the singleton class named Host, which found in the *ViSiGenie4DSystems.Async.SerialComm* namespace. The *Host* class takes care of all the display I/O.
+Supports Windows IoT apps that require an easy to use interface to 4D Systems’ graphic display modules. Host communications with the display module is accomplished by using the singleton class named Host, which is located in the namespace ViSiGenie4DSystems.Async.SerialComm. IoT devices like the Raspberry Pi 2, 3, Dragonboard 410c or Minnowboard Max are connected to the 4D Systems display module via a Silicon Labs CP2102 USB to Serial UART Bridge Converter cable. Host Class Methods enable the discovery of multiple displays connected to the IoT device. Upon completing display discovery, the app can then connect, send and/or receive display messages.
 
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/TouchDisplay.jpg">
 
-* Provides an API supports the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic. 
+* Adheres to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic idiom. 
   See [ViSi-Genie Reference Manual](http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf) 
-  The reference manual defines language independent message data structures and command/event protocols.
 
-* Intended for applications requiring a non-primary display running on a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX.  
+* Intended for headed or headless Windows IoT applications requiring a non-primary display running on a Raspberry Pi 2 and 3, Arrow DragonBoard 410c or MinnowBoard MAX.  
 
 * Connects and discovers one or more displays.
    
-* Queues all incomming ViSi Genie Report Events and Report Objects that originate from the display. 
-  The library forwards display events as C# async event for the app to handle. 
+* Queues all incomming ViSi Genie Report messages that originate from the display. 
+  The library forwards display events as C# async events for the app to handle. 
   For instance, the user presses a menu button object on the resistive touch display.  
 
-* Uses Reactive Extensions - Main Library 2.3.0-beta2, which contains packages compatible with UAP.   
+### Roadmap
 
-* For more details on RX, please reference [Reactive Extensions (Rx) – Part 1 – Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
+Future plans for ViSiGenie4DSystems.Async is to support Reactive Extensions - Main Library. 2.3.0-beta2 support UWP but currently this version of RX is not a stable Nuget package state.   
+It is envision ViSi Genie Report messages would use RX. See [Reactive Extensions (Rx) – Part 1 – Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
 
 ### Hardware 
 
@@ -41,13 +37,6 @@ To get started, use the singleton class named Host, which found in the *ViSiGeni
 ```
 PM> Install-Package ViSiGenie.4DSystems.Async -Version 1.2.0
 ```
-
-* If your 4D Workshop4 project sends events to the host, then also install the Reactive Extensions Main Library 2.3.0-beta2: 
-
-```
-PM> Install-Package Rx-Main -Pre
-```
-
 * In Microsoft Visual Studio, edit the project Package.appmanifest file. 
   Add a capability to support *serialcommunication*. 
   If *DeviceCapability* is not configured, then the *Host* will throw an exception when *Connect* gets called.
@@ -114,27 +103,30 @@ namespace DisplayHeadless
 			Task connectTask = Host.Instance.Connect(deviceId, portDef);
 			await connectTask;
 
-			//5. Set up a subscription to ReportEventMessage objects. Uses RX 2.3.0-beta2 for UWP support.
-			var report = new ReportEventMessageSubscription()
-			report.Subscribe()
+			//4. This app happens to interested in ReportEventMessages that originate from the touch display
+			await Host.Instance.SubscribeToReportEventMessages(deviceId, ReportEventMessageHandler.Handler);
 
-			//6. App start listening for display sent from the display. 
+			//5. App start listening for display sent from the display. 
 			await StartListening(deviceId);
 		
-			//7. Change to form 0 on display per a particular 4D Workshop4 project layout.  
+			//6. Change to form 0 on display per a particular 4D Workshop4 project layout.  
 			const int displayFormId = 0;
 			var writeObjectMessage = new WriteObjectValueMessage(ObjectType.Form, displayFormId);
 			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeObjectMessage, cts.Token);
 
-			//8. Write string message to display per a particular 4D Workshop4 project layout...
+			//7. Write string message to display per a particular 4D Workshop4 project layout...
 			const int displayStringId = 0;
 			var writeStringMessage = new WriteStringASCIIMessage(displayStringId, "Hello 4D Systems via Windows IoT!");
 			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeStringMessage, cts.Token);
 		
-			//9. App stops listening to display events
+			//8.1  OPTIONAL. No events will fire. Your message handler will not receive events any more.
+			await Host.Instance.UnsubscribeFromReportEventMessages(deviceId, ReportEventMessageHandler.Handler);
+
+			//8.2 App stops listening to display events
 		    await Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId);
     
-			//10. Disconect from display by giving up the serial device to garbarge collection
+			//9. Disconect from display by giving up the serial device to garbarge collection
+			//   ALL PENDING SUBSCRIPTIONS ARE IMPLICITLY UNSUBSCRIBED. (Same Optional Step 8.1)
 			await Host.Instance.Disconnect(deviceId);
 
             _defferal.Complete();
@@ -143,7 +135,7 @@ namespace DisplayHeadless
 }
 ```
 
-### Report Event Message Subscription
+### Report Event Message Handler
 
 When designing the Genie display application in Workshop, each Object can be
 configured to report its status change without the host having to poll it (see ReadObject
@@ -153,7 +145,7 @@ was set from 0 to 50 by the user. The exemplar below shows how-to recieve Report
 that occur when user touches an object on the display. 
 
 The switch statement shown below is for demo purposes only! 
-Instead, you need to customize the *OnReportEventMessageReceived* method per the project's Workshop 4 requirements.
+Instead, you need to customize the *Handler* method per project Workshop 4 requirements.
 
 ```C#
 using System.Threading.Tasks;
@@ -164,98 +156,87 @@ using ViSiGenie4DSystems.Async.Message;
 
 namespace HeadlessDemoApp //Contrived example
 {
-	public class ReportEventSubscription : IDisposable
+	public class ReportEventMessageHandler 
     {
-        private IDisposable subscription;
-
-        public ReportEventSubscription(){ }
-
-        public void Subscribe()
+        public async void Handler (object sender, DeferrableDisplayEventArgs e)
         {
-            var observable = Host.Instance.SubscribeToReportEventMessages(this.EnabledBoard.SerialDeviceId);
-            this.subscription = observable.Subscribe(OnReportEventMessageReceived);
-        }
-
-        public void Dispose()
-        {
-            this.subscription.Dispose();
-        }
-
-        public ADCBoard EnabledBoard { get; set; }
-
-        public void OnReportEventMessageReceived(ReportEventMessage hotReportEventMessage) 
-        {
-            ReportEventMessage hotReportEventMessage = (ReportEventMessage)sender;
-			//
-			//TODO: Switch on specific Workshop 4D project identifiers
-			//      EXAMPLE BELOW  SHOWS HANDLING VARIOUS 4D BUTTONS
-			//
-            switch (hotReportEventMessage.ObjectType)
+            using (var deferral = e.GetDeferral())
             {
-                case ObjectType.Button4D:
-                    {
-                        switch (hotReportEventMessage.ObjectIndex)
-                        {
-                            case 0:
-                                {
-									//TODO: Application specific for button id 0 handling goes here...
-                                    break;
-                                }
-                            case 1:
-                                {
-									//TODO: Application specific for button id 1 handling goes here...
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case ObjectType.Form:
-                    {
-                        switch (hotReportEventMessage.ObjectIndex)
-                        {
-                            case 0:
-                                {
-                                    //TODO: user activated Form 0 on display
-									//WARNING: DON'T BLOCK
-                                    break; 
-                                }
-                            case 1:
-                                {
-									//TODO: user activated Form 1 on display
-									//WARNING: DON'T BLOCK
-                                    break; 
-                                }
-                        }//END OF SWITCH
+                //Run task message cracker in thread pool thread
+                await Task.Run(() =>
+               {
+					ReportEventMessage hotReportEventMessage = (ReportEventMessage)sender;
+					//
+					//TODO: Switch on specific Workshop 4D project identifiers
+					//      EXAMPLE BELOW  SHOWS HANDLING VARIOUS 4D BUTTONS
+					//
+					switch (hotReportEventMessage.ObjectType)
+					{
+						case ObjectType.Button4D:
+							{
+								switch (hotReportEventMessage.ObjectIndex)
+								{
+									case 0:
+										{
+											//TODO: Application specific for button id 0 handling goes here...
+											break;
+										}
+									case 1:
+										{
+											//TODO: Application specific for button id 1 handling goes here...
+											break;
+										}
+								}
+								break;
+							}
+						case ObjectType.Form:
+							{
+								switch (hotReportEventMessage.ObjectIndex)
+								{
+									case 0:
+										{
+											//TODO: user activated Form 0 on display
+											//WARNING: DON'T BLOCK
+											break; 
+										}
+									case 1:
+										{
+											//TODO: user activated Form 1 on display
+											//WARNING: DON'T BLOCK
+											break; 
+										}
+								}//END OF SWITCH
 
-                        break;
-                    }//END OF FORM ACTIVATE
-                case ObjectType.Winbutton:
-                    {
-                        //Winbutton event was recevied from host
-                        switch (hotReportEventMessage.ObjectIndex)
-                        {
-                            case 0:
-                                {
-									//EXAMPLE:  shutdown headless app 
-									ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, new TimeSpan(0));
-                                    break;
-                                }
+								break;
+							}//END OF FORM ACTIVATE
+						case ObjectType.Winbutton:
+							{
+								//Winbutton event was recevied from host
+								switch (hotReportEventMessage.ObjectIndex)
+								{
+									case 0:
+										{
+											//EXAMPLE:  shutdown headless app 
+											ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, new TimeSpan(0));
+											break;
+										}
 
-                            case 5:
-                                {
-									//EXAMPLE: reboot headless app 
-									ShutdownManager.BeginShutdown(ShutdownKind.Restart, new TimeSpan(0));
-                                    break;
-                                }
-                        }
-                        break; 
-                    }//END OF WIN BUTTON
+									case 5:
+										{
+											//EXAMPLE: reboot headless app 
+											ShutdownManager.BeginShutdown(ShutdownKind.Restart, new TimeSpan(0));
+											break;
+										}
+								}
+								break; 
+							}//END OF WIN BUTTON
 
-                default:
-                    {
-                        break;
-                    }
-            }
+						default:
+							{
+								break;
+							}
+					}
+			}
         }
     }
 }
@@ -275,30 +256,19 @@ using ViSiGenie4DSystems.Async.Message;
 
 namespace HeadlessDemoApp //Contrived example
 {
-public class ReportObjectStatusMessageHandler : IDisposable
+    public class ReportObjectStatusMessageHandler
     {
-        private IDisposable subscription;
-
-        public ReportObjectStatusMessageHandler()
+        public async void Handler(object sender, DeferrableDisplayEventArgs e)
         {
-        }
+            using (var deferral = e.GetDeferral())
+            {
+                await Task.Run(() =>
+                {
+                    ReportObjectStatusMessage hotReportObjectMessage = (ReportObjectStatusMessage)sender;
 
-        public void Subscribe()
-        {
-            IObservable<ReportObjectStatusMessage> observable = Host.Instance.SubscribeToReportObjectStatusMessage(this.EnabledBoard.SerialDeviceId);
-            this.subscription = observable.Subscribe(OnReportEventMessageReceived);
-        }
-
-        public ADCBoard EnabledBoard { get; set; }
-
-        public void Dispose()
-        {
-            this.subscription.Dispose();
-        }
-
-        public void OnReportEventMessageReceived(ReportObjectStatusMessage ReportObjectStatusMessage)
-        {      
-            //TODO: ADD YOUR HANDLER CASES HERE PER THE APPLICATION SPECIFIC 4D WORKSHOP PROJECT
+                    //TODO: Switch on the report object status message ...
+                });
+            }
         }
     }
 }

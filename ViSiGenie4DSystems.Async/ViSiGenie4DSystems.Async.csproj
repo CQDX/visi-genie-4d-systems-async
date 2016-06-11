@@ -116,6 +116,8 @@
     <Compile Include="Enumeration\Command.cs" />
     <Compile Include="Enumeration\EnumDescription.cs" />
     <Compile Include="Enumeration\ObjectType.cs" />
+    <Compile Include="Event\ReportEventArg.cs" />
+    <Compile Include="Event\ReportSubscriptions.cs" />
     <Compile Include="Message\ReadMessage.cs" />
     <Compile Include="Message\ReadObjectStatusMessage.cs" />
     <Compile Include="Message\ReportEventMessage.cs" />

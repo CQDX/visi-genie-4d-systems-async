@@ -12,6 +12,7 @@ using Windows.Devices.SerialCommunication;
 
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Message;
+using ViSiGenie4DSystems.Async.Event;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
@@ -126,7 +127,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         /// <summary>
         /// Given a deviceID, the host is disconnected from a particular serial device display.
-        /// The maintained reference to the serial device is surrendered and all outstanding event subscriptions are cleared.
+        /// All pending subscriptions are implicitly unsubscribed. 
+        /// The maintained reference to the serial device is surrendered.
         /// 
         /// PRECONDITION: DiscoverDeviceIds() was successful
         /// 
@@ -144,17 +146,120 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
+
             await this.CancelAllTokenSources(deviceId);
+
+            serialDeviceDisplay.ReportEventMessageSubscriptions.RemoveAll();
+            serialDeviceDisplay.ReportObjectStatusMessageSubscriptions.RemoveAll();
+            serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.RemoveAll();
+            serialDeviceDisplay.ReportMagicDoubleBytesMessageSubscriptions.RemoveAll();
+
             this.SerialDeviceDisplays.Clear();
         }
         #endregion
 
-        #region AVAILABLE SUBSCRIPTIONS 
-        /// <summary>
-        /// Establish an optional subscription to Report Event Messages 
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <returns>Returns a <see cref="IObservable<ReportEventMessage>"/></returns>
+
+        #region REPORT EVENTS SUBSCRIPTIONS
+        public void SubscribeToReportEventMessages(string deviceId, EventHandler<ReportEventArgs> reportEventMessageHandler )
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to subscribe to ReportEventMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportEventMessageSubscriptions.Add(reportEventMessageHandler);
+        }
+
+        public void SubscribeToReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to subscribe to ReportObjectStatusMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportObjectStatusMessageSubscriptions.Add(reportObjectStatusMessageHandler);
+        }
+
+        public void SubscribeToReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to subscribe to ReportMagicBytesMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.Add(reportMagicBytesMessageHandler);
+        }
+
+        public void SubscribeToReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to subscribe to ReportMagicDoubleBytesMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportMagicDoubleBytesMessageSubscriptions.Add(reportMagicDoubleBytesMessageHandler);
+        }
+
+        public void UnsubscribeFromReportEventMessages(string deviceId, EventHandler<ReportEventArgs> reportEventMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to unsubscribe from ReportEventMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportEventMessageSubscriptions.Remove(reportEventMessageHandler);
+        }
+
+        public void UnsubscribeFromReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to unsubscribe from ReportObjectStatusMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportObjectStatusMessageSubscriptions.Remove(reportObjectStatusMessageHandler);
+        }
+
+        public void UnsubscribeFromReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to unsubscribe from ReportMagicBytesMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.Remove(reportMagicBytesMessageHandler);
+        }
+
+        public void UnsubscribeFromReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
+        {
+            var serialDeviceDisplay = this.LookupDevice(deviceId);
+            if (serialDeviceDisplay == null)
+            {
+                var error = string.Format("Unable to unsubscribe from ReportMagicDoubleBytesMessages because deviceId {0} could not be found", deviceId);
+                Debug.WriteLine(error);
+                throw new NullReferenceException(error);
+            }
+            serialDeviceDisplay.ReportMagicDoubleBytesMessageSubscriptions.Remove(reportMagicDoubleBytesMessageHandler);
+        }
+        #endregion
+
+        #region FUTURE SUPPORT FOR REACTIVE EXTENSION SUBSCRIPTIONS 
+
+        /*WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
         public IObservable<ReportEventMessage> SubscribeToReportEventMessages(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -169,11 +274,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             return observableREMR;
         }
 
-        /// <summary>
-        /// Establish an optional subscription to Report Object Status Messages
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <returns>Returns a <see cref="IObservable<ReportObjectStatusMessage>"/></returns>
         public IObservable<ReportObjectStatusMessage> SubscribeToReportObjectStatusMessage(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -188,11 +288,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             return observableROSMR;
         }
 
-        /// <summary>
-        /// Establish an optional subscription to all Report Magic Bytes Messages
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <returns>Returns a <see cref="IObservable<ReportMagicBytesMessage>"/></returns>
         public IObservable<ReportMagicBytesMessage> SubscribeToReportMagicBytesMessage(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -207,11 +302,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             return observableRMBMR;
         }
 
-        /// <summary>
-        /// Establish an optional subscription to Report Magic Double Bytes Messages
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <returns>Returns a <see cref="IObservable<ReportMagicDoubleBytesMessage>"/></returns>
         public IObservable<ReportMagicDoubleBytesMessage> SubscribeToReportMagicDoubleBytesMessage(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -225,6 +315,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var observableRMDBMR = serialDeviceDisplay.ReportMagicDoubleBytesMessageReceived;
             return observableRMDBMR;
         }
+        */
         #endregion
 
         #region SUBSCRIPTION LIFETIME 

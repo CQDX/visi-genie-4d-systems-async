@@ -8,13 +8,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+//using System.Reactive.Subjects; //FUTURE MIGRATION PLAN FOR THIS CODE
+
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Message;
 using ViSiGenie4DSystems.Async.Specification;
-using System.Reactive.Subjects;
+
+using ViSiGenie4DSystems.Async.Event;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
@@ -55,11 +58,20 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             this.ReportMagicDoubleBytesMessageCancellationTokenSource =  new CancellationTokenSource();
             this.ReceiveCancellationTokenSource = new CancellationTokenSource();
 
+            //Report events received from display...
+            this.ReportEventMessageSubscriptions = new ReportSubscriptions();
+            this.ReportObjectStatusMessageSubscriptions =new ReportSubscriptions();
+            this.ReportMagicBytesMessageSubscriptions = new ReportSubscriptions();
+            this.ReportMagicDoubleBytesMessageSubscriptions = new ReportSubscriptions();
+
             //Reactive Extenstions to support client subscriptions
+
+            /* WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
             this.reportEventMessageReceived = new Subject<ReportEventMessage>();
             this.reportObjectStatusMessageReceived = new Subject<ReportObjectStatusMessage>();
             this.reportMagicBytesMessageReceived = new Subject<ReportMagicBytesMessage>();
             this.reportMagicDoubleBytesMessageReceived = new Subject<ReportMagicDoubleBytesMessage>();
+            */
         }
         #endregion
 
@@ -76,7 +88,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// UWP resource that provides serial device communications
         /// </summary>
         private SerialDevice SerialDevice { get; set; }
-
 
         /// <summary>
         /// Indicates if listener tasks are up and running.
@@ -121,16 +132,18 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         private ConcurrentQueue<ReportMagicDoubleBytesMessage> ReportMagicDoubleBytesMessageQueue { get; set; }
         #endregion
 
-        #region REACTIVE EXTENSION FOR REPORT EVENTS
-        /// <summary>
-        /// Implementation to support Rx for ReportEventMessage
-        /// </summary>
-        private Subject<ReportEventMessage> reportEventMessageReceived;
+        #region EVENTS SUBSCRIPTIONS
+        public ReportSubscriptions ReportEventMessageSubscriptions { get; set; }
+        public ReportSubscriptions ReportObjectStatusMessageSubscriptions { get; set; }
+        public ReportSubscriptions ReportMagicBytesMessageSubscriptions { get; set; }
+        public ReportSubscriptions ReportMagicDoubleBytesMessageSubscriptions { get; set; }
+        #endregion
 
-        /// <summary>
-        /// Reactive extention (Rx) is used instead to ensures firing order and strong typing of ReportEventMessage that can be observed through subscription.
-        /// </summary>
-        /// <returns>Returns a <see cref="IObservable<ReportEventMessage>"/></returns>
+        #region REACTIVE EXTENSION FOR REPORT EVENTS
+
+        /* WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
+
+        private Subject<ReportEventMessage> reportEventMessageReceived;
         public IObservable<ReportEventMessage> ReportEventMessageReceived
         {
             get
@@ -139,15 +152,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
         }
 
-        /// <summary>
-        /// Implementation to support Rx for ReportObjectStatusMessage
-        /// </summary>
         private Subject<ReportObjectStatusMessage> reportObjectStatusMessageReceived;
-
-        /// <summary>
-        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportObjectStatusMessage that can be observed through subscription.
-        /// </summary>
-        /// <returns>Returns a <see cref="IObservable<ReportObjectStatusMessage>"/></returns>
         public IObservable<ReportObjectStatusMessage> ReportObjectStatusMessageReceived
         {
             get
@@ -156,15 +161,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
         }
 
-        /// <summary>
-        /// Implementation to support Rx for ReportMagicBytesMessage
-        /// </summary>
         private Subject<ReportMagicBytesMessage> reportMagicBytesMessageReceived;
-
-        /// <summary>
-        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportMagicBytesMessage that can be observed through subscription.
-        /// </summary>
-        /// <returns>Returns a <see cref="IObservable<ReportMagicBytesMessage>"/></returns>
         public IObservable<ReportMagicBytesMessage> ReportMagicBytesMessageReceived
         {
             get
@@ -189,6 +186,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 return this.reportMagicDoubleBytesMessageReceived;
             }
         }
+
+        */
         #endregion
 
         #region Connect to Serial Device
@@ -543,8 +542,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             Debug.WriteLine("Entering DequeueReportEventMessages Task");
 
-            await Task.Run( () =>
-            {
+            //await Task.Run( () =>
+            //{
                 while (cancellationToken.IsCancellationRequested == false)
                 {
                     //TRY DEQUEUE
@@ -552,10 +551,14 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                     bool status = this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage);
                     if (status)
                     {
-                        this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
+                        await this.ReportEventMessageSubscriptions.Raise(dequeuedReportEventMessage);
+
+                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                        //this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
                     }
                 }
-            });
+            //}
+            //});
 
             Debug.WriteLine("Exiting DequeueReportEventMessages Task");
         }
@@ -569,8 +572,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             Debug.WriteLine("Entering DequeueReportObjectStatusMessages Task");
 
-            await Task.Run( () =>
-            {
+            //await Task.Run( () =>
+            //{
                 while (cancellationToken.IsCancellationRequested == false)
                 { 
                     //TRY DEQUEUE
@@ -578,10 +581,13 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                     bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage);
                     if (status)
                     {
-                        this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
+                        await this.ReportObjectStatusMessageSubscriptions.Raise(dequeuedReportObjectStatusMessage);
+
+                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                        //this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
                     }
                 }
-            });
+            //});
 
             Debug.WriteLine("Exiting DequeueReportObjectStatusMessages Task");
         }
@@ -590,8 +596,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             Debug.WriteLine("Entering DequeueReportMagicBytesMessages Task");
 
-            await Task.Run( () =>
-            {
+            //await Task.Run( () =>
+            //{
                 while (cancellationToken.IsCancellationRequested == false)
                 {
                     //TRY DEQUEUE
@@ -599,10 +605,13 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                     bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out dequeuedReportMagicBytesMessage);
                     if (status)
                     {
-                        this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
+                        await this.ReportMagicBytesMessageSubscriptions.Raise(dequeuedReportMagicBytesMessage);
+
+                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                        //this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
                     }
                 }
-            });
+           // });
 
             Debug.WriteLine("Exiting DequeueReportMagicBytesMessages Task");
         }
@@ -611,8 +620,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             Debug.WriteLine("Entering ReportMagicDoubleBytesMessages Task");
 
-            await Task.Run( () =>
-            {
+            //await Task.Run( () =>
+           // {
                 while (cancellationToken.IsCancellationRequested == false)
                 {
                     //TRY DEQUEUE
@@ -620,10 +629,13 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                     bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out dequeuedReportDoubleMagicBytesMessage);
                     if (status)
                     {
-                        this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
+                        await this.ReportMagicDoubleBytesMessageSubscriptions.Raise(dequeuedReportDoubleMagicBytesMessage);
+
+                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
+                        //this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
                     }
                 }
-            });
+            //});
 
             Debug.WriteLine("Exiting DequeueReportMagicDoubleBytesMessagesTask");
         }
