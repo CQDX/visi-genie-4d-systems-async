@@ -127,7 +127,7 @@ namespace DisplayHeadless
     
 			//9. Disconect from display by giving up the serial device to garbarge collection
 			//   ALL PENDING SUBSCRIPTIONS ARE IMPLICITLY UNSUBSCRIBED. (Same Optional Step 8.1)
-			await Host.Instance.Disconnect(deviceId);
+			Host.Instance.Disconnect(deviceId);
 
             _defferal.Complete();
         }        
@@ -154,7 +154,7 @@ using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Event;
 using ViSiGenie4DSystems.Async.Message;
 
-namespace HeadlessDemoApp //Contrived example
+namespace HeadlessDemoApp 
 {
 	public class ReportEventMessageHandler 
     {
@@ -163,12 +163,12 @@ namespace HeadlessDemoApp //Contrived example
             using (var deferral = e.GetDeferral())
             {
                 //Run task message cracker in thread pool thread
-                await Task.Run(() =>
+               await Task.Run( () =>
                {
 					ReportEventMessage hotReportEventMessage = (ReportEventMessage)sender;
 					//
-					//TODO: Switch on specific Workshop 4D project identifiers
-					//      EXAMPLE BELOW  SHOWS HANDLING VARIOUS 4D BUTTONS
+					//TODO: Switch on specific  identifiers per specific Workshop 4D project layout
+					//      EXAMPLES BELOW SHOWS HANDLING VARIOUS 4D BUTTON HANDLERS...
 					//
 					switch (hotReportEventMessage.ObjectType)
 					{
@@ -178,12 +178,12 @@ namespace HeadlessDemoApp //Contrived example
 								{
 									case 0:
 										{
-											//TODO: Application specific for button id 0 handling goes here...
+											//TODO: User pressed button id 0 on display
 											break;
 										}
 									case 1:
 										{
-											//TODO: Application specific for button id 1 handling goes here...
+											//TODO: User pressed button id 1 on display
 											break;
 										}
 								}
@@ -211,7 +211,7 @@ namespace HeadlessDemoApp //Contrived example
 							}//END OF FORM ACTIVATE
 						case ObjectType.Winbutton:
 							{
-								//Winbutton event was recevied from host
+								//Winbutton event was recevied from display
 								switch (hotReportEventMessage.ObjectIndex)
 								{
 									case 0:
@@ -233,9 +233,11 @@ namespace HeadlessDemoApp //Contrived example
 
 						default:
 							{
+							    // TODO: application specific logic..
 								break;
 							}
-					}
+					} //end of switch
+				}); //end async thread pool execution
 			}
         }
     }

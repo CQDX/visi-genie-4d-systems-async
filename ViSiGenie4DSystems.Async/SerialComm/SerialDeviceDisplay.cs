@@ -541,22 +541,23 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportEventMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportEventMessages Task");
+            await Task.Delay(5); //Otherwise consumes thread
 
             //await Task.Run( () =>
             //{
-                while (cancellationToken.IsCancellationRequested == false)
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                //TRY DEQUEUE
+                ReportEventMessage dequeuedReportEventMessage;
+                bool status = this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage);
+                if (status)
                 {
-                    //TRY DEQUEUE
-                    ReportEventMessage dequeuedReportEventMessage;
-                    bool status = this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage);
-                    if (status)
-                    {
-                        await this.ReportEventMessageSubscriptions.Raise(dequeuedReportEventMessage);
+                    await this.ReportEventMessageSubscriptions.Raise(dequeuedReportEventMessage);
 
-                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
-                        //this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
-                    }
+                    //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                    //this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
                 }
+            }
             //}
             //});
 
@@ -571,22 +572,23 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportObjectStatusMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportObjectStatusMessages Task");
+            await Task.Delay(5); //Otherwise consumes thread
 
             //await Task.Run( () =>
             //{
-                while (cancellationToken.IsCancellationRequested == false)
-                { 
-                    //TRY DEQUEUE
-                    ReportObjectStatusMessage dequeuedReportObjectStatusMessage;
-                    bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage);
-                    if (status)
-                    {
-                        await this.ReportObjectStatusMessageSubscriptions.Raise(dequeuedReportObjectStatusMessage);
+            while (cancellationToken.IsCancellationRequested == false)
+            { 
+                //TRY DEQUEUE
+                ReportObjectStatusMessage dequeuedReportObjectStatusMessage;
+                bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage);
+                if (status)
+                {
+                    await this.ReportObjectStatusMessageSubscriptions.Raise(dequeuedReportObjectStatusMessage);
 
-                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
-                        //this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
-                    }
+                    //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                    //this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
                 }
+            }
             //});
 
             Debug.WriteLine("Exiting DequeueReportObjectStatusMessages Task");
@@ -595,22 +597,23 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportMagicBytesMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportMagicBytesMessages Task");
+            await Task.Delay(5); //Otherwise consumes thread
 
             //await Task.Run( () =>
             //{
-                while (cancellationToken.IsCancellationRequested == false)
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                //TRY DEQUEUE
+                ReportMagicBytesMessage dequeuedReportMagicBytesMessage;
+                bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out dequeuedReportMagicBytesMessage);
+                if (status)
                 {
-                    //TRY DEQUEUE
-                    ReportMagicBytesMessage dequeuedReportMagicBytesMessage;
-                    bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out dequeuedReportMagicBytesMessage);
-                    if (status)
-                    {
-                        await this.ReportMagicBytesMessageSubscriptions.Raise(dequeuedReportMagicBytesMessage);
+                    await this.ReportMagicBytesMessageSubscriptions.Raise(dequeuedReportMagicBytesMessage);
 
-                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
-                        //this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
-                    }
+                    //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+                    //this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
                 }
+            }
            // });
 
             Debug.WriteLine("Exiting DequeueReportMagicBytesMessages Task");
@@ -619,22 +622,23 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportMagicDoubleBytesMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering ReportMagicDoubleBytesMessages Task");
+            await Task.Delay(5); //Otherwise consumes thread
 
             //await Task.Run( () =>
-           // {
-                while (cancellationToken.IsCancellationRequested == false)
+            //{
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                //TRY DEQUEUE
+                ReportMagicDoubleBytesMessage dequeuedReportDoubleMagicBytesMessage;
+                bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out dequeuedReportDoubleMagicBytesMessage);
+                if (status)
                 {
-                    //TRY DEQUEUE
-                    ReportMagicDoubleBytesMessage dequeuedReportDoubleMagicBytesMessage;
-                    bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out dequeuedReportDoubleMagicBytesMessage);
-                    if (status)
-                    {
-                        await this.ReportMagicDoubleBytesMessageSubscriptions.Raise(dequeuedReportDoubleMagicBytesMessage);
+                    await this.ReportMagicDoubleBytesMessageSubscriptions.Raise(dequeuedReportDoubleMagicBytesMessage);
 
-                        //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
-                        //this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
-                    }
+                    //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
+                    //this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
                 }
+            }
             //});
 
             Debug.WriteLine("Exiting DequeueReportMagicDoubleBytesMessagesTask");
