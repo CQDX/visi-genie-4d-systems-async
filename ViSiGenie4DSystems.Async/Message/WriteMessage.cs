@@ -11,13 +11,11 @@ namespace ViSiGenie4DSystems.Async.Message
 {
     /// <summary>
     /// The apex of outbound byte data sent to a 4D Systems display. 
-    /// WriteMessage accomodates write message specializations per the Visi-Genie Reference Manual.
-    /// 
-    /// See runtime binding Async4D.SerialComm.Host which points high to this apex signature.
-    /// 
-    ///     public async Task<Acknowledgement> Send(string deviceId, WriteMessage writeMessage, int cancelAfterMillisecondsDelay=1000)
-    /// 
+    /// WriteMessage accomodates various specializations per the Visi-Genie Reference Manual.
     /// </summary>
+    /// <remarks>
+    /// Notice <see cref="Host"/> Send method is written in terms of this abstract base class.
+    /// </remarks>
     abstract public class WriteMessage
         : IMessageFormat
     {

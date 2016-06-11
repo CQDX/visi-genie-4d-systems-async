@@ -18,6 +18,8 @@ namespace ViSiGenie4DSystems.Async.Message
     /// This is the response message from the Display after the Host issues the Read Object
     /// Status message. The Display will respond back with the 2 byte value for the specific item
     /// of that object.
+    /// 
+    /// Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class ReportObjectStatusMessage
         : ReadMessage,
@@ -136,7 +138,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }

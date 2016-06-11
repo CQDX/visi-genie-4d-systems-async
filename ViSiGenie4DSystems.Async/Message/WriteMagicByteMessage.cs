@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
@@ -13,7 +11,6 @@ namespace ViSiGenie4DSystems.Async.Message
 {
     /// <summary>
     /// Per Visi-Genie Reference Manual, 3.1.3.8 Write Magic Bytes
-    /// Document Date: 20th May 2015 Document Revision: 1.11
     /// 
     /// This command can be used to send an array of bytes to a magic object. The magic object can
     /// process the bytes in any way you want it to as there is no restrictions on the format of the
@@ -22,6 +19,8 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Note1: The maximum number of bytes that can be sent at once is set by the ‘Maximum String
     /// Length’ setting in Workshop under File, Options, Genie.
     /// Note2: A Workshop PRO license is required to use this capability.
+    /// 
+    /// Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class WriteMagicByteMessage
         : WriteMessage,
@@ -31,12 +30,23 @@ namespace ViSiGenie4DSystems.Async.Message
           IToHexString,
           IDebug
     {
+        /// <summary>
+        /// Supports base construction of a WriteMagicBytesMessage object. 
+        /// </summary>
         public WriteMagicByteMessage()
         {
-            this.Checksum = 0;
             this.Command = Command.WRITE_MAGIC_BYTES;
+            this.Bytes = null;
+            this.Length = 0;
+            this.Checksum = 0;      
         }
 
+        /// <summary>
+        /// Supports partial construction of a WriteMagicBytesMessage object. 
+        /// </summary>
+        /// <param name="objectIndex">
+        /// Specifies the index of the Magic Object per a particular Workshop PRO project layout.
+        /// </param>
         public WriteMagicByteMessage(int objectIndex)
             : this()
         {
@@ -130,6 +140,7 @@ namespace ViSiGenie4DSystems.Async.Message
 
             var stack = new List<byte>();
 
+            //Push
             stack.Add(Convert.ToByte(this.Command));
 
             stack.Add(Convert.ToByte(this.ObjectIndex));
@@ -153,17 +164,17 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }
 
-        public void Write()
+        virtual public void Write()
         {
             Debug.Write(String.Format("WriteMagicByteMessage {0}", ToHexString()));
         }
 
-        public void WriteLine()
+        virtual public void WriteLine()
         {
             Debug.WriteLine(String.Format("WriteMagicByteMessage {0}", ToHexString()));
         }

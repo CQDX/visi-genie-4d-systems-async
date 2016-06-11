@@ -16,6 +16,8 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Document Date: 20th May 2015 Document Revision: 1.11
     /// 
     /// The write message that lets you adjust the 4D System's display contrast.
+    /// 
+    /// Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class WriteContrastMessage
         : WriteMessage,

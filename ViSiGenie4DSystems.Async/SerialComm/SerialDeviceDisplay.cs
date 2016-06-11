@@ -14,7 +14,7 @@ using Windows.Storage.Streams;
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Message;
 using ViSiGenie4DSystems.Async.Specification;
-using ViSiGenie4DSystems.Async.Event;
+using System.Reactive.Subjects;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
@@ -30,6 +30,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </summary>
         public SerialDeviceDisplay()
         {
+            this.AreEventListenerTasksRunning = false;
+
             this.ACK = (int)Acknowledgement.ACK;
             this.NAK = (int)Acknowledgement.NAK;
 
@@ -43,37 +45,45 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             this.AckNakQueue = new ConcurrentQueue<byte>();
             this.ReportEventMessageQueue = new ConcurrentQueue<ReportEventMessage>();
             this.ReportObjectStatusMessageQueue = new ConcurrentQueue<ReportObjectStatusMessage>();
+            this.ReportMagicBytesMessageQueue = new ConcurrentQueue<ReportMagicBytesMessage>();
+            this.ReportMagicDoubleBytesMessageQueue = new ConcurrentQueue<ReportMagicDoubleBytesMessage>();
 
             //Cancelation of tasks...
             this.ReportEventMessageCancellationTokenSource = new CancellationTokenSource();
             this.ReportObjectStatusMessageCancellationTokenSource = new CancellationTokenSource();
+            this.ReportMagicBytesMessageCancellationTokenSource = new CancellationTokenSource();
+            this.ReportMagicDoubleBytesMessageCancellationTokenSource =  new CancellationTokenSource();
             this.ReceiveCancellationTokenSource = new CancellationTokenSource();
+
+            //Reactive Extenstions to support client subscriptions
+            this.reportEventMessageReceived = new Subject<ReportEventMessage>();
+            this.reportObjectStatusMessageReceived = new Subject<ReportObjectStatusMessage>();
+            this.reportMagicBytesMessageReceived = new Subject<ReportMagicBytesMessage>();
+            this.reportMagicDoubleBytesMessageReceived = new Subject<ReportMagicDoubleBytesMessage>();
         }
         #endregion
 
-        #region Cancellation 
-        /// <summary>
-        /// Manage life of task named ReportEventMessageCancellationTokenSource
-        /// </summary>
+        #region CANCELLATION
         public CancellationTokenSource ReportEventMessageCancellationTokenSource { get; set; }
-
-        /// <summary>
-        /// Manage life of task named ReportObjectStatusMessageCancellationTokenSource
-        /// </summary>
         public CancellationTokenSource ReportObjectStatusMessageCancellationTokenSource { get; set; }
-
-        /// <summary>
-        /// Manage life of task named ReceiveCancellationTokenSource
-        /// </summary>
+        public CancellationTokenSource ReportMagicBytesMessageCancellationTokenSource { get; set; }
+        public CancellationTokenSource ReportMagicDoubleBytesMessageCancellationTokenSource { get; set; }
         public CancellationTokenSource ReceiveCancellationTokenSource { get; set; }
         #endregion
 
-        #region Implementation Properties
+        #region PROPERTIES
         /// <summary>
         /// UWP resource that provides serial device communications
         /// </summary>
         private SerialDevice SerialDevice { get; set; }
-        
+
+
+        /// <summary>
+        /// Indicates if listener tasks are up and running.
+        /// This prevents client from sending a message without first setting up their subscriptions
+        /// </summary>
+        public bool AreEventListenerTasksRunning { get; set; }
+
         /// <summary>
         /// The response received from display was successfull
         /// </summary>
@@ -106,6 +116,79 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </summary>
         private ConcurrentQueue<ReportObjectStatusMessage> ReportObjectStatusMessageQueue { get; set; }
 
+        private ConcurrentQueue<ReportMagicBytesMessage> ReportMagicBytesMessageQueue { get; set; }
+
+        private ConcurrentQueue<ReportMagicDoubleBytesMessage> ReportMagicDoubleBytesMessageQueue { get; set; }
+        #endregion
+
+        #region REACTIVE EXTENSION FOR REPORT EVENTS
+        /// <summary>
+        /// Implementation to support Rx for ReportEventMessage
+        /// </summary>
+        private Subject<ReportEventMessage> reportEventMessageReceived;
+
+        /// <summary>
+        /// Reactive extention (Rx) is used instead to ensures firing order and strong typing of ReportEventMessage that can be observed through subscription.
+        /// </summary>
+        /// <returns>Returns a <see cref="IObservable<ReportEventMessage>"/></returns>
+        public IObservable<ReportEventMessage> ReportEventMessageReceived
+        {
+            get
+            {
+                return this.reportEventMessageReceived;
+            }
+        }
+
+        /// <summary>
+        /// Implementation to support Rx for ReportObjectStatusMessage
+        /// </summary>
+        private Subject<ReportObjectStatusMessage> reportObjectStatusMessageReceived;
+
+        /// <summary>
+        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportObjectStatusMessage that can be observed through subscription.
+        /// </summary>
+        /// <returns>Returns a <see cref="IObservable<ReportObjectStatusMessage>"/></returns>
+        public IObservable<ReportObjectStatusMessage> ReportObjectStatusMessageReceived
+        {
+            get
+            {
+                return this.reportObjectStatusMessageReceived;
+            }
+        }
+
+        /// <summary>
+        /// Implementation to support Rx for ReportMagicBytesMessage
+        /// </summary>
+        private Subject<ReportMagicBytesMessage> reportMagicBytesMessageReceived;
+
+        /// <summary>
+        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportMagicBytesMessage that can be observed through subscription.
+        /// </summary>
+        /// <returns>Returns a <see cref="IObservable<ReportMagicBytesMessage>"/></returns>
+        public IObservable<ReportMagicBytesMessage> ReportMagicBytesMessageReceived
+        {
+            get
+            {
+                return this.reportMagicBytesMessageReceived;
+            }
+        }
+
+        /// <summary>
+        /// Implementation to support Rx for ReportMagicDoubleBytesMessage
+        /// </summary>
+        private Subject<ReportMagicDoubleBytesMessage> reportMagicDoubleBytesMessageReceived;
+
+        /// <summary>
+        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportMagicBytesMessage that can be observed through subscription.
+        /// </summary>
+        /// <returns>Returns a <see cref="IObservable<ReportMagicDoubleBytesMessage>"/></returns>
+        public IObservable<ReportMagicDoubleBytesMessage> ReportMagicDoubleBytesMessageReceived
+        {
+            get
+            {
+                return this.reportMagicDoubleBytesMessageReceived;
+            }
+        }
         #endregion
 
         #region Connect to Serial Device
@@ -154,7 +237,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
         }
         #endregion
-
 
         #region SEND MESSAGE FROM HOST TO DISPLAY 
         /// <summary>
@@ -354,6 +436,52 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                         this.ReportObjectStatusMessageQueue.Enqueue(new ReportObjectStatusMessage(rawReportObjectStatusMessage));
                     }
                 }
+                else if (peakByte[0] == ((byte)Command.WRITE_MAGIC_EVENT_BYTES)) //CMD
+                {
+                    const uint readRestOfReportMagicMessage = 2; 
+                    //GET OBJECT-INDEX + LENGTH
+                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken);
+                    if (descriptorBytes != null)
+                    {
+                        int objectIndex = descriptorBytes[0];
+                        uint magicByteLength = descriptorBytes[1];
+                        //GET BYTES
+                        byte[] magicBytes = await this.ReadBytes(magicByteLength, cancellationToken);
+                        if (magicBytes != null)
+                        {
+                            //GET CHECKSUM
+                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken);
+                            if (checkSumByte != null)
+                            {
+                                var bytesReport = new ReportMagicBytesMessage(objectIndex, (int)magicByteLength, magicBytes, checkSumByte[0]);
+                                this.ReportMagicBytesMessageQueue.Enqueue(bytesReport);
+                            }
+                        }
+                    }
+                }
+                else if (peakByte[0] == ((byte)Command.WRITE_MAGIC_EVENT_DBYTES)) //CMD
+                {
+                    const uint readRestOfReportMagicMessage = 2;
+                    //GET OBJECT-INDEX + LENGTH
+                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken);
+                    if (descriptorBytes != null)
+                    {
+                        int objectIndex = descriptorBytes[0];
+                        uint magicByteLength = descriptorBytes[1];
+                        //GET BYTES
+                        byte[] doubleMagicBytes = await this.ReadBytes(magicByteLength, cancellationToken);
+                        if (doubleMagicBytes != null)
+                        {
+                            //GET CHECKSUM
+                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken);
+                            if (checkSumByte != null)
+                            {
+                                var doubleBytesReport = new ReportMagicDoubleBytesMessage(objectIndex, (int)magicByteLength, doubleMagicBytes, checkSumByte[0]);
+                                this.ReportMagicDoubleBytesMessageQueue.Enqueue(doubleBytesReport);
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     Debug.WriteLine(String.Format("RX ? 0x{0}", peakByte[0].ToString("X2")));
@@ -405,30 +533,29 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
         #endregion
 
-
-        #region EVENT DEQUEUE
+        #region DEQUEUE DISPLAY EVENT AND FIRE SUBSCRIPTIONS
         /// <summary>
         /// Takes first and send to subscriber of ReportEventMessage objects.
         /// </summary>
-        /// <param name="eventHandlerContainer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task DequeueReportEventMessages(DisplayableEvent eventHandlerContainer, CancellationToken cancellationToken)
+        public async Task DequeueReportEventMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportEventMessages Task");
-            await Task.Delay(5);
 
-            //Listen for Report Event Messages until told to cancel this task
-            while (cancellationToken.IsCancellationRequested == false)
+            await Task.Run( () =>
             {
-                //TRY DEQUEUE NEXT ReportEventMessage
-                //Take blocks until item is available to be removed or the token is canceled
-                ReportEventMessage dequeuedReportEventMessage;
-                if (this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage))
+                while (cancellationToken.IsCancellationRequested == false)
                 {
-                    await eventHandlerContainer.Raise(dequeuedReportEventMessage);
+                    //TRY DEQUEUE
+                    ReportEventMessage dequeuedReportEventMessage;
+                    bool status = this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage);
+                    if (status)
+                    {
+                        this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
+                    }
                 }
-            }
+            });
 
             Debug.WriteLine("Exiting DequeueReportEventMessages Task");
         }
@@ -436,26 +563,69 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <summary>
         /// Takes first and send to subscriber of ReportObjectStatusMessage objects.
         /// </summary>
-        /// <param name="eventHandlerContainer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task DequeueReportObjectStatusMessages(DisplayableEvent eventHandlerContainer, CancellationToken cancellationToken)
+        public async Task DequeueReportObjectStatusMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportObjectStatusMessages Task");
-            await Task.Delay(5); //Otherwise consumes thread
 
-            //Listen for Report Event Messages until told to cancel this task
-            while (cancellationToken.IsCancellationRequested == false)
-            { 
-                //TRY DEQUEUE NEXT ReportEventMessage
-                ReportObjectStatusMessage dequeuedReportObjectStatusMessage;
-                if (this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage))
+            await Task.Run( () =>
+            {
+                while (cancellationToken.IsCancellationRequested == false)
                 { 
-                    await eventHandlerContainer.Raise(dequeuedReportObjectStatusMessage);
+                    //TRY DEQUEUE
+                    ReportObjectStatusMessage dequeuedReportObjectStatusMessage;
+                    bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage);
+                    if (status)
+                    {
+                        this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
+                    }
                 }
-            }
+            });
 
             Debug.WriteLine("Exiting DequeueReportObjectStatusMessages Task");
+        }
+
+        public async Task DequeueReportMagicBytesMessages(CancellationToken cancellationToken)
+        {
+            Debug.WriteLine("Entering DequeueReportMagicBytesMessages Task");
+
+            await Task.Run( () =>
+            {
+                while (cancellationToken.IsCancellationRequested == false)
+                {
+                    //TRY DEQUEUE
+                    ReportMagicBytesMessage dequeuedReportMagicBytesMessage;
+                    bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out dequeuedReportMagicBytesMessage);
+                    if (status)
+                    {
+                        this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
+                    }
+                }
+            });
+
+            Debug.WriteLine("Exiting DequeueReportMagicBytesMessages Task");
+        }
+
+        public async Task DequeueReportMagicDoubleBytesMessages(CancellationToken cancellationToken)
+        {
+            Debug.WriteLine("Entering ReportMagicDoubleBytesMessages Task");
+
+            await Task.Run( () =>
+            {
+                while (cancellationToken.IsCancellationRequested == false)
+                {
+                    //TRY DEQUEUE
+                    ReportMagicDoubleBytesMessage dequeuedReportDoubleMagicBytesMessage;
+                    bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out dequeuedReportDoubleMagicBytesMessage);
+                    if (status)
+                    {
+                        this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
+                    }
+                }
+            });
+
+            Debug.WriteLine("Exiting DequeueReportMagicDoubleBytesMessagesTask");
         }
         #endregion
 

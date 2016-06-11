@@ -22,6 +22,8 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Status message). If the object’s ‘Event Handler’ is set to ‘Report Event’ in the ‘Event’ tab,
     /// the display will transmit the object’s status upon any change.For example, Slider 3 object
     /// was set from 0 to 50 by the user.
+    /// 
+    /// Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class ReportEventMessage
         : ReadMessage,
@@ -129,7 +131,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }

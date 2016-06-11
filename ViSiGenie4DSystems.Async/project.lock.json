@@ -201,6 +201,57 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.0, )",
@@ -1777,6 +1828,57 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -3388,6 +3490,57 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -5006,6 +5159,57 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.0, )",
@@ -6615,6 +6819,57 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -8233,6 +8488,57 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.0, )",
@@ -9842,6 +10148,57 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "Rx-Core/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Core.dll": {}
+        }
+      },
+      "Rx-Interfaces/2.3.0-beta2": {
+        "compile": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Interfaces.dll": {}
+        }
+      },
+      "Rx-Linq/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.Linq.dll": {}
+        }
+      },
+      "Rx-Main/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )",
+          "Rx-Linq": "[2.3.0-beta2, )",
+          "Rx-PlatformServices": "[2.3.0-beta2, )"
+        }
+      },
+      "Rx-PlatformServices/2.3.0-beta2": {
+        "dependencies": {
+          "Rx-Core": "[2.3.0-beta2, )",
+          "Rx-Interfaces": "[2.3.0-beta2, )"
+        },
+        "compile": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
+        },
+        "runtime": {
+          "lib/windows8/System.Reactive.PlatformServices.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -11866,6 +12223,128 @@
         "ref/net46/Microsoft.Win32.Primitives.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._"
+      ]
+    },
+    "Rx-Core/2.3.0-beta2": {
+      "sha512": "ufLvowEi6bzrCrRSEY3RS/gUbV6axNAT9uzsbGDWeAShcwSBbOSxlcioQsvlYCgzAAB15WK9dM1f0sUk4NTE6w==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/net40/System.Reactive.Core.dll",
+        "lib/net40/System.Reactive.Core.XML",
+        "lib/net45/System.Reactive.Core.dll",
+        "lib/net45/System.Reactive.Core.XML",
+        "lib/net46/System.Reactive.Core.dll",
+        "lib/net46/System.Reactive.Core.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Core.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Core.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Core.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Core.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Core.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Core.XML",
+        "lib/sl5/System.Reactive.Core.dll",
+        "lib/sl5/System.Reactive.Core.XML",
+        "lib/windows8/System.Reactive.Core.dll",
+        "lib/windows8/System.Reactive.Core.XML",
+        "lib/windowsphone8/System.Reactive.Core.dll",
+        "lib/windowsphone8/System.Reactive.Core.XML",
+        "package/services/metadata/core-properties/adc0a55d0ca947dc98443cf265dc770a.psmdcp",
+        "Rx-Core.nuspec"
+      ]
+    },
+    "Rx-Interfaces/2.3.0-beta2": {
+      "sha512": "YgUHTMj9qNKF2+zdXsAAkXy5cYvTHD/OSXG0PkVu/QDRDvHcINR+EsKqh3Dh9Tjssvsivs8cXuO3rV0GnSqMbg==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/net40/System.Reactive.Interfaces.dll",
+        "lib/net40/System.Reactive.Interfaces.XML",
+        "lib/net45/System.Reactive.Interfaces.dll",
+        "lib/net45/System.Reactive.Interfaces.XML",
+        "lib/net46/System.Reactive.Interfaces.dll",
+        "lib/net46/System.Reactive.Interfaces.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Interfaces.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Interfaces.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Interfaces.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Interfaces.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Interfaces.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Interfaces.XML",
+        "lib/sl5/System.Reactive.Interfaces.dll",
+        "lib/sl5/System.Reactive.Interfaces.XML",
+        "lib/windows8/System.Reactive.Interfaces.dll",
+        "lib/windows8/System.Reactive.Interfaces.XML",
+        "lib/windowsphone8/System.Reactive.Interfaces.dll",
+        "lib/windowsphone8/System.Reactive.Interfaces.XML",
+        "package/services/metadata/core-properties/03d381598db047d7a93bf54e424139cc.psmdcp",
+        "Rx-Interfaces.nuspec"
+      ]
+    },
+    "Rx-Linq/2.3.0-beta2": {
+      "sha512": "3VTu/AvESi12ucOYWlpv4aZT3xkV7BYG4zUHV+IV3fj+mWx0C9M8jtn99oQ2AZsLx7wsWpYNqCiwyPeqwNmWHQ==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/net40/System.Reactive.Linq.dll",
+        "lib/net40/System.Reactive.Linq.XML",
+        "lib/net45/System.Reactive.Linq.dll",
+        "lib/net45/System.Reactive.Linq.XML",
+        "lib/net46/System.Reactive.Linq.dll",
+        "lib/net46/System.Reactive.Linq.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Linq.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Linq.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Linq.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.Linq.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Linq.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Linq.XML",
+        "lib/sl5/System.Reactive.Linq.dll",
+        "lib/sl5/System.Reactive.Linq.XML",
+        "lib/windows8/System.Reactive.Linq.dll",
+        "lib/windows8/System.Reactive.Linq.XML",
+        "lib/windowsphone8/System.Reactive.Linq.dll",
+        "lib/windowsphone8/System.Reactive.Linq.XML",
+        "package/services/metadata/core-properties/1873dac86e1345578c7a81d48de747bd.psmdcp",
+        "Rx-Linq.nuspec"
+      ]
+    },
+    "Rx-Main/2.3.0-beta2": {
+      "sha512": "zss81QC+I0UiKJhNOnjDY6ildp0vR+QKZfxZh4E1wmUR7JivePlMf86Qashesywm+rCKVtLeHKj/eZk5gpeUaw==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "package/services/metadata/core-properties/f246d330e0de42999a69be97cae68958.psmdcp",
+        "Rx-Main.nuspec"
+      ]
+    },
+    "Rx-PlatformServices/2.3.0-beta2": {
+      "sha512": "AFDbK+gVGqd2rNBwsXjrWX+PwWIQ34IE8DnP2wnl+LT7menKe1mpjwUANTFN349zMZY3eTtr34N4vtdHgX65yw==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/net40/System.Reactive.PlatformServices.dll",
+        "lib/net40/System.Reactive.PlatformServices.XML",
+        "lib/net45/System.Reactive.PlatformServices.dll",
+        "lib/net45/System.Reactive.PlatformServices.XML",
+        "lib/net46/System.Reactive.PlatformServices.dll",
+        "lib/net46/System.Reactive.PlatformServices.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.PlatformServices.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.PlatformServices.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.PlatformServices.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/System.Reactive.PlatformServices.XML",
+        "lib/portable-win81+wpa81/System.Reactive.PlatformServices.dll",
+        "lib/portable-win81+wpa81/System.Reactive.PlatformServices.XML",
+        "lib/sl5/System.Reactive.PlatformServices.dll",
+        "lib/sl5/System.Reactive.PlatformServices.XML",
+        "lib/windows8/System.Reactive.PlatformServices.dll",
+        "lib/windows8/System.Reactive.PlatformServices.XML",
+        "lib/windowsphone8/System.Reactive.PlatformServices.dll",
+        "lib/windowsphone8/System.Reactive.PlatformServices.XML",
+        "package/services/metadata/core-properties/2bc5ebdd432e48e1b205e44dd5f71350.psmdcp",
+        "Rx-PlatformServices.nuspec"
       ]
     },
     "System.AppContext/4.0.0": {
@@ -14566,7 +15045,8 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0"
+      "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
+      "Rx-Main >= 2.3.0-beta2"
     ],
     "UAP,Version=v10.0": []
   }

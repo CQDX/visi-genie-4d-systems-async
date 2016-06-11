@@ -116,14 +116,15 @@
     <Compile Include="Enumeration\Command.cs" />
     <Compile Include="Enumeration\EnumDescription.cs" />
     <Compile Include="Enumeration\ObjectType.cs" />
-    <Compile Include="Event\DeferrableDisplayEventArgs.cs" />
-    <Compile Include="Event\DisplayableEvent.cs" />
     <Compile Include="Message\ReadMessage.cs" />
-    <Compile Include="Message\ReadObjectStatusMessag.cs" />
+    <Compile Include="Message\ReadObjectStatusMessage.cs" />
     <Compile Include="Message\ReportEventMessage.cs" />
+    <Compile Include="Message\ReportMagicBytesMessage.cs" />
+    <Compile Include="Message\ReportMagicDoubleBytesMessage.cs" />
     <Compile Include="Message\ReportObjectStatusMessage.cs" />
     <Compile Include="Message\WriteContrastMessage.cs" />
     <Compile Include="Message\WriteMagicByteMessage.cs" />
+    <Compile Include="Message\WriteMagicDoubleBytesMessage.cs" />
     <Compile Include="Message\WriteMessage.cs" />
     <Compile Include="Message\WriteObjectValueMessage.cs" />
     <Compile Include="Message\WriteStringASCIIMessage.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Specification\IMessageFormat.cs" />
     <Compile Include="Specification\IReadObjectStatusMessage.cs" />
     <Compile Include="Specification\IReportEventMessage.cs" />
+    <Compile Include="Specification\IReportMagicByteMessage.cs" />
     <Compile Include="Specification\IReportObjectStatusMessage.cs" />
     <Compile Include="Specification\IToHexString.cs" />
     <Compile Include="Specification\IWriteContrastMessage.cs" />

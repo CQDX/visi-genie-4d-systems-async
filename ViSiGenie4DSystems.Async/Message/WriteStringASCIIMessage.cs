@@ -23,6 +23,7 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Note1: The ASCII characters are 1 byte each.
     /// Note2: The String should be null terminated.
     /// Note3: Refer to the application notes for detailed information on Strings and their usage.
+    /// eference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class WriteStringASCIIMessage
         : WriteMessage,
@@ -155,7 +156,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }

@@ -16,14 +16,25 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Document Date: 20th May 2015 Document Revision: 1.11
     /// 
     /// The host sends this message to the display to determine the current value of a 
-    /// specific object instance.
+    /// specific object instance. 
+    /// 
+    /// NOTE: The name of this class is confusing. Its origination is from the HOST. 
+    /// A better name would be RequestObjectStatusMessage or perhaps WriteObjectStatusMessage.
+    /// See Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// 
     /// Upon receipt of this message the display will reply with either a NAK
     /// (in the case of an error) or the REPORT_OBJ message
     /// (0x05, Object-ID, Object Index, Value {msb}, Value {lsb}, checksum). 
+    /// 
+    /// If the Display did not understand the message it will respond with the NAK
+    /// byte. In this case, the Host should retransmit the message.
+    /// 
+    /// If the Display understood the message, it will respond back with the 
+    /// ReportObjectStatusMessage.
+    /// 
     /// </summary>
     public class ReadObjectStatusMessage
-        : ReadMessage,
+        : WriteMessage,
           IReadObjectStatusMessage,
           ICalculateChecksum,
           IToHexString,
@@ -52,7 +63,7 @@ namespace ViSiGenie4DSystems.Async.Message
         }
 
         /// <summary>
-        /// Copy some displayMessage to this
+        /// Copy in a ReadObjectStatusMessage
         /// </summary>
         /// <param name="otherReadObjectValueMessage"></param>
         public ReadObjectStatusMessage(ReadObjectStatusMessage otherReadObjectValueMessage)
@@ -119,7 +130,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }

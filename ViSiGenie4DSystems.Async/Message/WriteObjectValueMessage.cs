@@ -17,6 +17,7 @@ namespace ViSiGenie4DSystems.Async.Message
     /// 
     /// The host issues the Write Object command message when it wants to change the status of an
     /// individual object item.
+    /// eference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class WriteObjectValueMessage
         : WriteMessage,
@@ -166,7 +167,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append(String.Format("0x{0}", b.ToString("X2")));
             }
             return sb.ToString();
         }
