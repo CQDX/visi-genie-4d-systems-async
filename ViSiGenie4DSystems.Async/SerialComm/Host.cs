@@ -20,9 +20,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
     /// Enabled a client application to communicate with one or more 4D System display(s) connected via a serial device. 
     /// </summary>
     /// <remarks>
-    /// <see cref="Host"/> is a sealed singleton class that creates compatible ViSi Genie compatible read events. This class
-    /// takes care of the setting up the subscription to 4D Systems Visi Genie Reports by using Reactive Extensions - Main Library 2.3.0-beta2.
-    /// A Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable is used to connected the host USB port to display's backside 5 pins connector.
+    /// <see cref="Host"/> enables the client app to send outbound messages to the display and sets up optional subscriptions to 4D Systems Visi Genie inbound Reports. 
+    /// A Silicon Labs CP2102 USB to Serial UART Bridge Converter Cable is used to connected the host USB port to the display's backside 5 pins connector.
     /// </remarks>
     public sealed class Host
     {
@@ -56,9 +55,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         #region DEVICE DISCOVERY
         /// <summary>
         /// Finds 1 to N connected 4D Systems display modules. 
-        /// Each display found connected to the USB port on the Host is identified by string identifier. 
-        /// The client app must retain the return string identifier in order to use subsequent Host class methods.
-        /// A list of string indentifiers is returned, where 1 or more display can be connected via the USB ports.
+        /// Each display found is identified by a string identifier. 
+        /// The client app must retain this string identifier in order to use the other class methods.
         /// 
         /// ************************************************************************************************
         /// 
@@ -108,10 +106,11 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// 
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <param name="portDef">
-        /// A <see cref="PortDef"/> baud rate that matches the related Workshop 4 project baud rate.
+        /// A <see cref="PortDef"/> baud rate that matches the related Workshop 4 project's baud rate.
+        /// A mismatched baud rate will result in failed communcations between the host and the display.
         /// </param>
         /// <returns>Returns a <see cref="Task"/></returns>
         public async Task Connect(string deviceId, PortDef portDef)
@@ -126,15 +125,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
 
         /// <summary>
-        /// Given a deviceID, the host is disconnected from a particular serial device display.
+        /// Given a deviceID, the host is disconnected from display.
         /// All pending subscriptions are implicitly unsubscribed. 
-        /// The maintained reference to the serial device is surrendered.
+        /// The maintained reference to the SerialDevice is surrendered to the garbage collector.
         /// 
         /// PRECONDITION: DiscoverDeviceIds() was successful
         /// 
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         public void Disconnect(string deviceId)
         {
@@ -142,7 +141,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             {
                 this.CancelAllTokenSources(deviceId);
                 this.RemoveAllSubscriptions(deviceId);
-                this.SerialDeviceDisplays.Clear();
+                this.SerialDeviceDisplays.Remove(deviceId);
             }
             catch (Exception ex)
             {
@@ -154,6 +153,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
 
         #region REPORT EVENTS SUBSCRIPTIONS
+        /// <summary>
+        /// Optional subscription to a ReportEventMessage object that originate from the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to receive ReportEventMessage objects.
+        /// </param>
         public void SubscribeToReportEventMessages(string deviceId, EventHandler<ReportEventArgs> reportEventMessageHandler )
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -166,6 +174,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportEventMessageSubscriptions.Add(reportEventMessageHandler);
         }
 
+        /// <summary>
+        /// Optional subscription to a ReportObjectStatusMessage object that originate from the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to receive ReportObjectStatusMessage objects.
+        /// </param>
         public void SubscribeToReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -178,6 +195,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportObjectStatusMessageSubscriptions.Add(reportObjectStatusMessageHandler);
         }
 
+        /// <summary>
+        /// Optional subscription to a ReportMagicBytesMessage object that originate from the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to receive ReportMagicBytesMessage objects.
+        /// </param>
         public void SubscribeToReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -190,6 +216,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.Add(reportMagicBytesMessageHandler);
         }
 
+        /// <summary>
+        /// Optional subscription to a ReportMagicDoubleBytesMessage object that originate from the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to receive ReportMagicDoubleBytesMessage objects.
+        /// </param>
         public void SubscribeToReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -202,6 +237,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportMagicDoubleBytesMessageSubscriptions.Add(reportMagicDoubleBytesMessageHandler);
         }
 
+        /// <summary>
+        /// Unsubscribe from ReportEventMessage objects being sent by the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to stop receiving ReportEventMessage objects.
+        /// </param>
         public void UnsubscribeFromReportEventMessages(string deviceId, EventHandler<ReportEventArgs> reportEventMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -214,6 +258,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportEventMessageSubscriptions.Remove(reportEventMessageHandler);
         }
 
+        /// <summary>
+        /// Unsubscribe from ReportObjectStatusMessage objects being sent by the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to stop receiving ReportObjectStatusMessage objects.
+        /// </param>
         public void UnsubscribeFromReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -226,6 +279,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportObjectStatusMessageSubscriptions.Remove(reportObjectStatusMessageHandler);
         }
 
+        /// <summary>
+        /// Unsubscribe from ReportMagicBytesMessage objects being sent by the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to stop receiving ReportMagicBytesMessage objects.
+        /// </param>
         public void UnsubscribeFromReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -238,6 +300,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.Remove(reportMagicBytesMessageHandler);
         }
 
+        /// <summary>
+        /// Unsubscribe from ReportMagicDoubleBytesMessage objects being sent by the display.
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
+        /// <param name="reportEventMessageHandler">
+        /// Client function name to stop receiving ReportMagicDoubleBytesMessage objects.
+        /// </param>
         public void UnsubscribeFromReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -253,7 +324,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region FUTURE SUPPORT FOR REACTIVE EXTENSION SUBSCRIPTIONS 
 
-        /*WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
+        /*WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 AND DON'T WANT UNSTABLE NUGET PACKAGE DEPENDENCY
         public IObservable<ReportEventMessage> SubscribeToReportEventMessages(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -320,7 +391,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         ///  
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <returns>Returns a <see cref="Task"/> to be awaited across the listening lifetime.</returns>
         public async Task StartListening(string deviceId)
@@ -369,7 +440,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// Precondition: The <see cref="StartSubscriptions"/> has been called.
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         public void StopListening(string deviceId)
         {
@@ -395,7 +466,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// canceled after the specified delay in milliseconds.
         /// </remarks>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <param name="writeMessage">
         /// A concrete subclass of <see cref="WriteMessage"/> per the Visi-Genie Reference Manual. 
@@ -420,7 +491,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// canceled after the specified delay in milliseconds.
         /// </remarks>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <param name="bytesToWrite">
         /// An order packing of bytes per the command data structures found in the Visi-Genie Reference Manual. 
@@ -453,7 +524,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region IMPLEMENTATION OF SERIAL DEVICE MANAGEMENT
         /// <summary>
-        /// A collection of key-value pairs that maintain discovered <see cref="SerialDeviceDisplay"/>.
+        /// A collection of key-value pairs that maintain discovered <see cref="SerialDeviceDisplay"/> objects.
         /// </summary>
         private Dictionary<string, SerialDeviceDisplay> SerialDeviceDisplays { get; set; }
 
@@ -461,7 +532,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// Given a valid deviceId key string, this method returns a particular <see cref="SerialDeviceDisplay"/> instance.
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <returns>
         /// Returns the <see cref="SerialDeviceDisplay"/> if found, otherwise returns null. 
@@ -480,7 +551,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// Given a valid deviceId key string, this method removes <see cref="SerialDeviceDisplay"/> instance.
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         private void RemoveDevice(string deviceId)
         {
@@ -496,7 +567,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// Given a valid deviceId key string, this cancels internal tasks used by the <see cref="SerialDeviceDisplay"/> instance.
         /// </summary>
         /// <param name="deviceId">
-        /// A unique key that represents a physically connected serial device display object.
+        /// A unique key that represents a physically connected serial device display.
         /// </param>
         private void CancelAllTokenSources(string deviceId)
         {
@@ -534,6 +605,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
         }
 
+        /// <summary>
+        /// Removes all subscriptions 
+        /// </summary>
+        /// <param name="deviceId">
+        /// A unique key that represents a physically connected serial device display.
+        /// </param>
         private void RemoveAllSubscriptions(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
@@ -549,7 +626,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.ReportMagicBytesMessageSubscriptions.RemoveAll();
             serialDeviceDisplay.ReportMagicDoubleBytesMessageSubscriptions.RemoveAll();
         }
-
         #endregion
     }
 }
