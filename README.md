@@ -1,8 +1,6 @@
 ## ViSiGenie4DSystems.Async
-
 ### About
-Supports Windows IoT apps that require an easy to use interface to 4D Systems’ graphic display modules. Host communications with the display module is accomplished by using the singleton class named Host, which is located in the namespace ViSiGenie4DSystems.Async.SerialComm. IoT devices like the Raspberry Pi 2, 3, Dragonboard 410c or Minnowboard Max are connected to the 4D Systems display module via a Silicon Labs CP2102 USB to Serial UART Bridge Converter cable. Host Class Methods enable the discovery of multiple displays connected to the IoT device. Upon completing display discovery, the app can then connect, send and/or receive display messages.
-
+Supports Windows IoT apps that need to interface with 4D Systems’ graphic display modules. Host communications with the display module is accomplished by using the singleton class named Host, which is located in the namespace ViSiGenie4DSystems.Async.SerialComm. IoT devices like the Raspberry Pi 2, 3, Dragonboard 410c or Minnowboard Max are connected to a 4D Systems display module using a Silicon Labs CP2102 USB-to-Serial UART Bridge Converter cable. Host Class Methods enable the discovery of multiple displays connected to the IoT device. Upon completing display discovery, the app can then connect, send and/or receive display messages.
 <img src="https://github.com/CQDX/visi-genie-4d-systems-async/blob/master/ViSiGenie4DSystems.Async/TouchDisplay.jpg">
 
 * Adheres to the ViSi-Genie Communication Protocols, Objects, Properties, and Genie Magic idiom. 
