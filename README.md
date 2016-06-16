@@ -10,8 +10,8 @@ Supports Windows IoT apps that need to interface with 4D Systems’ graphic displa
 
 * Connects and discovers one or more displays.
    
-* Queues all incomming ViSi Genie Report messages that originate from the display. 
-  The library forwards display events as C# async events for the app to handle. 
+* Queues up all incomming ViSi Genie Report messages that originate from the display. 
+  Forwards each Report as C# async events to the app's handler function. 
   For instance, the user presses a menu button object on the resistive touch display.  
 
 ### Roadmap

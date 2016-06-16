@@ -108,6 +108,7 @@
     <None Include="AsyncConsulting.pfx" />
     <None Include="Packaging\ViSiGenie4DSystems.Async.1.0.0.nupkg" />
     <None Include="Packaging\ViSiGenie4DSystems.Async.1.1.0.nupkg" />
+    <None Include="Packaging\ViSiGenie4DSystems.Async.1.2.0.nupkg" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,9 @@
     <SDKReference Include="WindowsIoT, Version=10.0.10240.0">
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Packaging\LogoAC64x64.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
