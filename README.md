@@ -18,7 +18,7 @@ Provides Windows IoT apps with an easy to use interface to 4D Systems’ graphic d
 ### Roadmap
 
 Future plans for ViSiGenie4DSystems.Async is to support Reactive Extensions - Main Library. 2.3.0-beta2 support UWP but currently this version of RX is not a stable Nuget package state.   
-It is envision ViSi Genie Report messages would use RX. See [Reactive Extensions (Rx) – Part 1 – Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
+For example, ViSi Genie Reports could use RX. See [Reactive Extensions (Rx) – Part 1 – Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
 
 ### Hardware 
 
@@ -64,7 +64,9 @@ The singleton class named *Host* creates and manages the lifetime of serial devi
 
 ### Host.Instance 
 
-The exemplar below shows how-to use the *Host.Instance* singleton:
+To demo Host.Instance, a new project in Microsoft Visual Studio needs to be created. 
+For example, File New -> .NET Framework 4.5.2 -> Windows IoT Core -> Background Application (IoT).
+The exemplar below shows how-to use the C# *Host* class in a Headless background application:
 
 ```C#
 using System;
@@ -87,45 +89,54 @@ namespace DisplayHeadless
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {		
-			var cts = new CancellationTokenSource();
-		
-			//1. App find the connected device identifier string and hang on to it
+			//1. The host application finds the connected device identifier string
 			Task<List<string>> discoverDeviceIdsTask = Host.Instance.DiscoverDeviceIds();
-			
+	
 			await discoverDeviceIdsTask;
 			 
-			//2. App connects host -to- the 4D Systems display. In this case, only one display is connected to the host
+			//2. In this case, we demo a single display connected to the host. Therefor, get the first device identifier.
+			//   The deviceId can logically thought of as the "token" used for all other subsequent HOST-DISPLAY I/O in methods 3 - 13 below.
 			var deviceId = discoverDeviseIdsTask.Result.First();
 			
-			//3. Host baud must match 4D Workshop project baud rate, else Connect will throw
+			//3. Host baud rate must match the 4D Workshop project's baud rate, otherwise the Connect method will throw an exception
 			var portDef = new PortDef(BaudRate.Bps115200);
+			
+			//4. Using the device identifier, Connect the host to the display
 			Task connectTask = Host.Instance.Connect(deviceId, portDef);
 			await connectTask;
 
-			//4. This app happens to interested in ReportEventMessages that originate from the touch display
+			//5. Subscribe to potential ReportEventMessages that originate from the touch display.
+			//   Notice the host app must provide a callback delegate 
 			await Host.Instance.SubscribeToReportEventMessages(deviceId, ReportEventMessageHandler.Handler);
 
-			//5. App start listening for display sent from the display. 
+			//6. The host starts listening for display reports. 
 			await StartListening(deviceId);
 		
-			//6. Change to form 0 on display per a particular 4D Workshop4 project layout.  
+			//7. Create a WriteObjectValueMessage per the ViSi Genie manual. 
+			//   The class, WriteObjectValueMessage, provides a helper constructor to create required data structure.
 			const int displayFormId = 0;
 			var writeObjectMessage = new WriteObjectValueMessage(ObjectType.Form, displayFormId);
-			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeObjectMessage, cts.Token);
 
-			//7. Write string message to display per a particular 4D Workshop4 project layout...
-			const int displayStringId = 0;
-			var writeStringMessage = new WriteStringASCIIMessage(displayStringId, "Hello 4D Systems via Windows IoT!");
-			await Host.Instance.Send(enabledBoard.SerialDeviceId, writeStringMessage, cts.Token);
+			//8. Send the WriteObjectValueMessage to the display form. Notice index 0 applies to a hypothetical 4D Workshop4 project. 
+			var cts = new CancellationTokenSource();
+			await Host.Instance.Send(deviceId, writeObjectMessage, cts.Token);
 		
-			//8.1  OPTIONAL. No events will fire. Your message handler will not receive events any more.
+			//9. Create a WriteStringASCIIMessage per the ViSi Genie manual. 
+			//   The class, WriteStringASCIIMessage, provides a helper constructor to create required data structure.
+			//   Notice displayStringId applies to a hypothetical 4D Workshop4 project. 
+			const int displayStringId = 0;
+			var writeStringMessage = new WriteStringASCIIMessage(deviceId, "Hello 4D Systems via Windows IoT!");
+			
+			//10. Send the WriteStringASCIIMessage to the display form. 
+			await Host.Instance.Send(deviceId, writeStringMessage, cts.Token);
+		
+			//11. The host is no longer interested in receiving report event from the display
 			await Host.Instance.UnsubscribeFromReportEventMessages(deviceId, ReportEventMessageHandler.Handler);
 
-			//8.2 App stops listening to display events
-		    await Host.Instance.StopListening(enabledBoard.Value.SerialDeviceId);
+			//12. The host stops all monitoring. For example, StopListening is called with the app is shutting down or rebooting.
+		    await Host.Instance.StopListening(deviceId);
     
-			//9. Disconect from display by giving up the serial device to garbarge collection
-			//   ALL PENDING SUBSCRIPTIONS ARE IMPLICITLY UNSUBSCRIBED. (Same Optional Step 8.1)
+			//13. Disconect from display by giving up the serial device resource to the garbarge collector
 			Host.Instance.Disconnect(deviceId);
 
             _defferal.Complete();
