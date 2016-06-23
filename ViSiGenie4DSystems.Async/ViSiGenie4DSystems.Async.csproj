@@ -157,7 +157,7 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Packaging\LogoAC64x64.png" />
+    <None Include="Packaging\LogoAC64x64.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
