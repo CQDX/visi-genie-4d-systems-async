@@ -7,7 +7,7 @@ namespace ViSiGenie4DSystems.Async.Message
     {
 
         /// <summary>
-        /// Supports base construction of a ReportMagicByteMessaobject. 
+        /// Supports base construction of a ReportMagicBytesMessage. 
         /// </summary>
         public ReportMagicDoubleBytesMessage()
         {

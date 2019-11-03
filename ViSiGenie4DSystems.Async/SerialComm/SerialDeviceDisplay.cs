@@ -14,7 +14,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 {
     /// <summary>.
     /// This class is carries out the essential I/O requirements needed to 
-    /// communicate with one 4D Systems brand display.
+    /// communicate with one 4D Systems display.
     /// </summary>
     public sealed class SerialDeviceDisplay
     {
@@ -35,34 +35,25 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             //The initial and maximum number of requests that can be granted concurrently when sending data to the display.
             this.SendSemaphore = new SemaphoreSlim(1, 1);
 
-            //Queues...
+            //Queues
             this.AckNakQueue = new ConcurrentQueue<byte>();
             this.ReportEventMessageQueue = new ConcurrentQueue<ReportEventMessage>();
             this.ReportObjectStatusMessageQueue = new ConcurrentQueue<ReportObjectStatusMessage>();
             this.ReportMagicBytesMessageQueue = new ConcurrentQueue<ReportMagicBytesMessage>();
             this.ReportMagicDoubleBytesMessageQueue = new ConcurrentQueue<ReportMagicDoubleBytesMessage>();
 
-            //Cancelation of tasks...
+            //Cancellation of tasks
             this.ReportEventMessageCancellationTokenSource = new CancellationTokenSource();
             this.ReportObjectStatusMessageCancellationTokenSource = new CancellationTokenSource();
             this.ReportMagicBytesMessageCancellationTokenSource = new CancellationTokenSource();
             this.ReportMagicDoubleBytesMessageCancellationTokenSource =  new CancellationTokenSource();
             this.ReceiveCancellationTokenSource = new CancellationTokenSource();
 
-            //Report events received from display...
+            //Report events received from display
             this.ReportEventMessageSubscriptions = new ReportSubscriptions();
             this.ReportObjectStatusMessageSubscriptions =new ReportSubscriptions();
             this.ReportMagicBytesMessageSubscriptions = new ReportSubscriptions();
             this.ReportMagicDoubleBytesMessageSubscriptions = new ReportSubscriptions();
-
-            //Reactive Extenstions to support client subscriptions
-
-            /* WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
-            this.reportEventMessageReceived = new Subject<ReportEventMessage>();
-            this.reportObjectStatusMessageReceived = new Subject<ReportObjectStatusMessage>();
-            this.reportMagicBytesMessageReceived = new Subject<ReportMagicBytesMessage>();
-            this.reportMagicDoubleBytesMessageReceived = new Subject<ReportMagicDoubleBytesMessage>();
-            */
         }
         #endregion
 
@@ -87,24 +78,24 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public bool AreEventListenerTasksRunning { get; set; }
 
         /// <summary>
-        /// The response received from display was successfull
+        /// The response received from display was successful
         /// </summary>
         private readonly byte _ack;
 
         /// <summary>
-        /// The response received from the display was unsuccessfull
+        /// The response received from the display was unsuccessful
         /// </summary>
         private readonly byte _nak;
 
         /// <summary>
         /// Synchronize one and only send message of N bytes to the display.
         /// </summary>
-        private SemaphoreSlim SendSemaphore { get; set; }
+        private SemaphoreSlim SendSemaphore { get; }
 
         /// <summary>
         /// Concurrent FIFO representation of inbound responses received from the connected display
         /// </summary>
-        private ConcurrentQueue<byte> AckNakQueue { get; set; }
+        private ConcurrentQueue<byte> AckNakQueue { get; }
 
         /// <summary>
         /// The default collection type for BlockingCollection<T> is ConcurrentQueue<T>.
@@ -114,7 +105,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         /// <summary>
         /// The default collection type for BlockingCollection<T> is ConcurrentQueue<T>
-        /// Concurrent FIFO representatioin of ReportObjectStatusMessage objects received from the connected display.
+        /// Concurrent FIFO representation of ReportObjectStatusMessage objects received from the connected display.
         /// </summary>
         private ConcurrentQueue<ReportObjectStatusMessage> ReportObjectStatusMessageQueue { get; set; }
 
@@ -128,57 +119,6 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public ReportSubscriptions ReportObjectStatusMessageSubscriptions { get; set; }
         public ReportSubscriptions ReportMagicBytesMessageSubscriptions { get; set; }
         public ReportSubscriptions ReportMagicDoubleBytesMessageSubscriptions { get; set; }
-        #endregion
-
-        #region REACTIVE EXTENSION FOR REPORT EVENTS
-
-        /* WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
-
-        private Subject<ReportEventMessage> reportEventMessageReceived;
-        public IObservable<ReportEventMessage> ReportEventMessageReceived
-        {
-            get
-            {
-                return this.reportEventMessageReceived;
-            }
-        }
-
-        private Subject<ReportObjectStatusMessage> reportObjectStatusMessageReceived;
-        public IObservable<ReportObjectStatusMessage> ReportObjectStatusMessageReceived
-        {
-            get
-            {
-                return this.reportObjectStatusMessageReceived;
-            }
-        }
-
-        private Subject<ReportMagicBytesMessage> reportMagicBytesMessageReceived;
-        public IObservable<ReportMagicBytesMessage> ReportMagicBytesMessageReceived
-        {
-            get
-            {
-                return this.reportMagicBytesMessageReceived;
-            }
-        }
-
-        /// <summary>
-        /// Implementation to support Rx for ReportMagicDoubleBytesMessage
-        /// </summary>
-        private Subject<ReportMagicDoubleBytesMessage> reportMagicDoubleBytesMessageReceived;
-
-        /// <summary>
-        /// Reactive extention (Rx) is used to ensures firing order and strong typing of ReportMagicBytesMessage that can be observed through subscription.
-        /// </summary>
-        /// <returns>Returns a <see cref="IObservable<ReportMagicDoubleBytesMessage>"/></returns>
-        public IObservable<ReportMagicDoubleBytesMessage> ReportMagicDoubleBytesMessageReceived
-        {
-            get
-            {
-                return this.reportMagicDoubleBytesMessageReceived;
-            }
-        }
-
-        */
         #endregion
 
         #region Connect to Serial Device
@@ -220,10 +160,10 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(String.Format("Connect threw: ", ex.Message));
+                Debug.WriteLine("Connect threw: ");
                 Debug.WriteLine(ex.StackTrace);
 
-                throw ex;
+                throw;
             }
         }
         #endregion
@@ -250,24 +190,24 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 //Good debug point here...
                 //Debug.WriteLine(string.Format("WROTE {0} BYTES", sendBytesTask.Result));  
 
-                acknowledgement = dequeueResponseTask.Result;
+                acknowledgement = await dequeueResponseTask.ConfigureAwait(false);
             }
             catch (OperationCanceledException oce)
             {
-                Debug.WriteLine(String.Format("Send caught {0}", oce.Message));
-                throw oce;
+                Debug.WriteLine($"Send caught {oce.Message}");
+                throw;
             }
             catch (ObjectDisposedException ode)
             {
-                Debug.WriteLine(String.Format("Send caught {0}", ode.Message));
+                Debug.WriteLine($"Send caught {ode.Message}");
                 Debug.WriteLine(ode.StackTrace);
-                throw ode;
+                throw;
             }
             catch (SemaphoreFullException sfe)
             {
-                Debug.WriteLine(String.Format("SendSemaphore threw {0}", sfe.Message));
+                Debug.WriteLine($"SendSemaphore threw {sfe.Message}");
                 Debug.WriteLine(sfe.StackTrace);
-                throw sfe;
+                throw;
             }
             finally
             {
@@ -295,15 +235,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
                 dataWriter = new DataWriter(this.SerialDevice.OutputStream);
                 dataWriter.WriteBytes(sendMessage);
-                Task<UInt32> storeAsyncTask = dataWriter.StoreAsync().AsTask();
-                bytesWrote = await storeAsyncTask;
+                Task<UInt32> storeAsyncTask = dataWriter.StoreAsync().AsTask(cancellationToken);
+                bytesWrote = await storeAsyncTask.ConfigureAwait(false);
             }
             finally
             {
-                if (dataWriter != null)
-                {
-                    dataWriter.DetachStream();
-                }
+                dataWriter?.DetachStream();
             }
             return bytesWrote;
         }
@@ -319,27 +256,27 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task Receive(CancellationToken cancellationToken)
         {       
             Debug.WriteLine("Entering Receive Task");
-            await Task.Delay(5);
+            await Task.Delay(5, cancellationToken).ConfigureAwait(false);
             try
             {
                 while (cancellationToken.IsCancellationRequested == false)
                 {
-                    await this.ParseReceivedMessage(cancellationToken);                  
+                    await this.ParseReceivedMessage(cancellationToken).ConfigureAwait(false);                  
                 }
             }
             catch (OperationCanceledException oce)
             {
-                Debug.WriteLine(String.Format("Receive caught {0}", oce.Message));
+                Debug.WriteLine($"Receive caught {oce.Message}");
             }
             catch (ObjectDisposedException ode)
             {
-                Debug.WriteLine(String.Format("Receive caught {0}", ode.Message));
+                Debug.WriteLine($"Receive caught {ode.Message}");
                 Debug.WriteLine(ode.StackTrace);
-                throw ode;
+                throw;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(String.Format("Receive caught {0}", ex.Message));
+                Debug.WriteLine($"Receive caught {ex.Message}");
             }
             finally
             {
@@ -354,14 +291,14 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         /// <summary>
         /// A task that works on decoding bytes received from display and
-        /// then enqueues to approapriate type of queue.
+        /// then enqueue to appropriate type of queue.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         private async Task ParseReceivedMessage(CancellationToken cancellationToken)
         {
             const uint readBufferLength = 1;
-            byte[] peakByte = await ReadBytes(readBufferLength, cancellationToken);
+            byte[] peakByte = await ReadBytes(readBufferLength, cancellationToken).ConfigureAwait(false);
             if (peakByte != null)
             {
                 if (peakByte[0] == _ack)
@@ -379,7 +316,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 else if (peakByte[0] == ((byte)Command.ReportEvent))
                 {
                     const uint readRestOfReportEvent = 5;
-                    byte[] moreBytes = await this.ReadBytes(readRestOfReportEvent, cancellationToken);
+                    byte[] moreBytes = await this.ReadBytes(readRestOfReportEvent, cancellationToken).ConfigureAwait(false);
                     if (moreBytes != null)
                     {
                         byte[] rawReportEvent = new byte[6];
@@ -404,7 +341,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 else if (peakByte[0] == ((byte)Command.ReportObj))
                 {
                     const uint readRestOfReportObjectStatusMessage = 5;
-                    byte[] moreBytes = await this.ReadBytes(readRestOfReportObjectStatusMessage, cancellationToken);
+                    byte[] moreBytes = await this.ReadBytes(readRestOfReportObjectStatusMessage, cancellationToken).ConfigureAwait(false);
                     if (moreBytes != null)
                     {
                         byte[] rawReportObjectStatusMessage = new byte[6];
@@ -430,17 +367,17 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 {
                     const uint readRestOfReportMagicMessage = 2; 
                     //GET OBJECT-INDEX + LENGTH
-                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken);
+                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken).ConfigureAwait(false);
                     if (descriptorBytes != null)
                     {
                         int objectIndex = descriptorBytes[0];
                         uint magicByteLength = descriptorBytes[1];
                         //GET BYTES
-                        byte[] magicBytes = await this.ReadBytes(magicByteLength, cancellationToken);
+                        byte[] magicBytes = await this.ReadBytes(magicByteLength, cancellationToken).ConfigureAwait(false);
                         if (magicBytes != null)
                         {
                             //GET CHECKSUM
-                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken);
+                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken).ConfigureAwait(false);
                             if (checkSumByte != null)
                             {
                                 var bytesReport = new ReportMagicBytesMessage(objectIndex, (int)magicByteLength, magicBytes, checkSumByte[0]);
@@ -453,17 +390,17 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 {
                     const uint readRestOfReportMagicMessage = 2;
                     //GET OBJECT-INDEX + LENGTH
-                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken);
+                    byte[] descriptorBytes = await this.ReadBytes(readRestOfReportMagicMessage, cancellationToken).ConfigureAwait(false);
                     if (descriptorBytes != null)
                     {
                         int objectIndex = descriptorBytes[0];
                         uint magicByteLength = descriptorBytes[1];
                         //GET BYTES
-                        byte[] doubleMagicBytes = await this.ReadBytes(magicByteLength, cancellationToken);
+                        byte[] doubleMagicBytes = await this.ReadBytes(magicByteLength, cancellationToken).ConfigureAwait(false);
                         if (doubleMagicBytes != null)
                         {
                             //GET CHECKSUM
-                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken);
+                            byte[] checkSumByte = await this.ReadBytes(1, cancellationToken).ConfigureAwait(false);
                             if (checkSumByte != null)
                             {
                                 var doubleBytesReport = new ReportMagicDoubleBytesMessage(objectIndex, (int)magicByteLength, doubleMagicBytes, checkSumByte[0]);
@@ -474,14 +411,14 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 }
                 else
                 {
-                    Debug.WriteLine(String.Format("RX ? 0x{0}", peakByte[0].ToString("X2")));
+                    Debug.WriteLine($"RX ? 0x{peakByte[0]:X2}");
                 }
             }
         }
 
         /// <summary>
         /// A supporting task that reads N bytes async from the 4D Display. 
-        /// This task will throw cancelation since this is the lowest level read tasking.
+        /// This task will throw cancellation since this is the lowest level read tasking.
         /// </summary>
         /// <param name="readBufferLength"></param>
         /// <param name="cancellationToken"></param>
@@ -495,15 +432,17 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                 // If read task cancellation was requested, then comply
                 cancellationToken.ThrowIfCancellationRequested();
 
-                dataReaderObject = new DataReader(this.SerialDevice.InputStream);
+                dataReaderObject = new DataReader(this.SerialDevice.InputStream)
+                {
+                    InputStreamOptions = InputStreamOptions.Partial
+                };
 
                 // Specify an asynchronous read operation when one or more bytes is available
-                dataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
 
                 // Create a task object to wait for data on the serialPort.InputStream
                 Task<UInt32> loadAsyncTask = dataReaderObject.LoadAsync(readBufferLength).AsTask(cancellationToken);
 
-                UInt32 bytesRead = await loadAsyncTask;
+                UInt32 bytesRead = await loadAsyncTask.ConfigureAwait(false);
 
                 if (bytesRead == readBufferLength)
                 {
@@ -514,10 +453,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             finally
             {
                 // Cleanup once complete
-                if (dataReaderObject != null)
-                {
-                    dataReaderObject.DetachStream();
-                }
+                dataReaderObject?.DetachStream();
             }
             return bytes;
         }
@@ -532,25 +468,20 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportEventMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportEventMessages Task");
-            await Task.Delay(5); //Otherwise consumes thread
+            await Task.Delay(5, cancellationToken).ConfigureAwait(false); //Otherwise consumes thread
 
-            //await Task.Run( () =>
-            //{
             while (cancellationToken.IsCancellationRequested == false)
             {
                 //TRY DEQUEUE
-                ReportEventMessage dequeuedReportEventMessage;
-                bool status = this.ReportEventMessageQueue.TryDequeue(out dequeuedReportEventMessage);
+                bool status = this.ReportEventMessageQueue.TryDequeue(out var dequeuedReportEventMessage);
                 if (status)
                 {
-                    await this.ReportEventMessageSubscriptions.Raise(dequeuedReportEventMessage);
+                    await this.ReportEventMessageSubscriptions.Raise(dequeuedReportEventMessage).ConfigureAwait(false);
 
                     //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
                     //this.reportEventMessageReceived.OnNext(dequeuedReportEventMessage);
                 }
             }
-            //}
-            //});
 
             Debug.WriteLine("Exiting DequeueReportEventMessages Task");
         }
@@ -563,24 +494,20 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportObjectStatusMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportObjectStatusMessages Task");
-            await Task.Delay(5); //Otherwise consumes thread
+            await Task.Delay(5, cancellationToken).ConfigureAwait(false); //Otherwise consumes thread
 
-            //await Task.Run( () =>
-            //{
             while (cancellationToken.IsCancellationRequested == false)
             { 
                 //TRY DEQUEUE
-                ReportObjectStatusMessage dequeuedReportObjectStatusMessage;
-                bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out dequeuedReportObjectStatusMessage);
+                bool status = this.ReportObjectStatusMessageQueue.TryDequeue(out var dequeuedReportObjectStatusMessage);
                 if (status)
                 {
-                    await this.ReportObjectStatusMessageSubscriptions.Raise(dequeuedReportObjectStatusMessage);
+                    await this.ReportObjectStatusMessageSubscriptions.Raise(dequeuedReportObjectStatusMessage).ConfigureAwait(false);
 
                     //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
                     //this.reportObjectStatusMessageReceived.OnNext(dequeuedReportObjectStatusMessage);
                 }
             }
-            //});
 
             Debug.WriteLine("Exiting DequeueReportObjectStatusMessages Task");
         }
@@ -588,24 +515,20 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportMagicBytesMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering DequeueReportMagicBytesMessages Task");
-            await Task.Delay(5); //Otherwise consumes thread
+            await Task.Delay(5, cancellationToken).ConfigureAwait(false); //Otherwise consumes thread
 
-            //await Task.Run( () =>
-            //{
             while (cancellationToken.IsCancellationRequested == false)
             {
                 //TRY DEQUEUE
-                ReportMagicBytesMessage dequeuedReportMagicBytesMessage;
-                bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out dequeuedReportMagicBytesMessage);
+                bool status = this.ReportMagicBytesMessageQueue.TryDequeue(out var dequeuedReportMagicBytesMessage);
                 if (status)
                 {
-                    await this.ReportMagicBytesMessageSubscriptions.Raise(dequeuedReportMagicBytesMessage);
+                    await this.ReportMagicBytesMessageSubscriptions.Raise(dequeuedReportMagicBytesMessage).ConfigureAwait(false);
 
                     //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 
                     //this.reportMagicBytesMessageReceived.OnNext(dequeuedReportMagicBytesMessage);
                 }
             }
-           // });
 
             Debug.WriteLine("Exiting DequeueReportMagicBytesMessages Task");
         }
@@ -613,24 +536,20 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         public async Task DequeueReportMagicDoubleBytesMessages(CancellationToken cancellationToken)
         {
             Debug.WriteLine("Entering ReportMagicDoubleBytesMessages Task");
-            await Task.Delay(5); //Otherwise consumes thread
+            await Task.Delay(5, cancellationToken).ConfigureAwait(false); //Otherwise consumes thread
 
-            //await Task.Run( () =>
-            //{
             while (cancellationToken.IsCancellationRequested == false)
             {
                 //TRY DEQUEUE
-                ReportMagicDoubleBytesMessage dequeuedReportDoubleMagicBytesMessage;
-                bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out dequeuedReportDoubleMagicBytesMessage);
+                bool status = this.ReportMagicDoubleBytesMessageQueue.TryDequeue(out var dequeuedReportDoubleMagicBytesMessage);
                 if (status)
                 {
-                    await this.ReportMagicDoubleBytesMessageSubscriptions.Raise(dequeuedReportDoubleMagicBytesMessage);
+                    await this.ReportMagicDoubleBytesMessageSubscriptions.Raise(dequeuedReportDoubleMagicBytesMessage).ConfigureAwait(false);
 
                     //WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 	
                     //this.reportMagicDoubleBytesMessageReceived.OnNext(dequeuedReportDoubleMagicBytesMessage);
                 }
             }
-            //});
 
             Debug.WriteLine("Exiting DequeueReportMagicDoubleBytesMessagesTask");
         }
@@ -638,7 +557,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
 
         #region DEQUEUE ACK OR NAK		
         /// <summary>
-        /// Takes first and returns acknowledgent.
+        /// Takes first and returns Acknowledgement.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -647,20 +566,19 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             Acknowledgement acknowledgement = Acknowledgement.Nak; 
             await Task.Run(() =>
             {
-                byte response;
                 //Block until ACK or NAK until told to cancel this task
-                if ( this.AckNakQueue.TryDequeue(out response) )
+                if ( this.AckNakQueue.TryDequeue(out var response) )
                 {
                     if (response == (int)Acknowledgement.Ack)
                     {
-                        Debug.WriteLine(String.Format("RX ACK 0x{0}", response.ToString("X2")));
+                        Debug.WriteLine($"RX ACK 0x{response.ToString($"X2")}");
 
                         acknowledgement = Acknowledgement.Ack;
                     }
                     else if (response == (int)Acknowledgement.Nak)
                     {
                         //SOME ISSUE WITH 4D DISPLAY BUT PROCEED... 
-                        Debug.WriteLine(String.Format("RX NAK 0x{0} AFTER 500 mS WAIT", response.ToString("X2")));
+                        Debug.WriteLine($"RX NAK 0x{response.ToString($"X2")} AFTER 500 mS WAIT");
 
                         acknowledgement = Acknowledgement.Nak;
                     }
@@ -670,7 +588,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                         acknowledgement = Acknowledgement.Timeout;
                     }
                 }                       
-            });
+            }, cancellationToken).ConfigureAwait(false);
 
             return acknowledgement;
         }

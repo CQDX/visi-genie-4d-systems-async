@@ -78,12 +78,12 @@ namespace ViSiGenie4DSystems.Async.Message
 
         public override void Write()
         {
-            Debug.Write(String.Format("WriteMagicDoubleBytesMessage {0}", ToHexString()));
+            Debug.Write($"WriteMagicDoubleBytesMessage {ToHexString()}");
         }
 
         public override void WriteLine()
         {
-            Debug.WriteLine(String.Format("WriteMagicDoubleBytesMessage {0}", ToHexString()));
+            Debug.WriteLine($"WriteMagicDoubleBytesMessage {ToHexString()}");
         }
     }
 }

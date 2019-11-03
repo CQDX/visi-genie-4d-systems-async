@@ -30,14 +30,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <summary>
         /// The single instance of the Host object.
         /// </summary>
-        public static Host Instance
-        {
-            get
-            {
-                return VeryLazy.Value;
-            }
-        }
-
+        public static Host Instance => VeryLazy.Value;
         /// <summary>
         /// Initializes the one and only <see cref="Host"/>.
         /// </summary>
@@ -53,13 +46,9 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// Finds 1 to N connected 4D Systems display modules. 
         /// Each display found is identified by a string identifier. 
         /// The client app must retain this string identifier in order to use the other class methods.
-        /// 
-        /// ************************************************************************************************
-        /// 
         /// IMPORTANT TODO: 
         /// The client application must add the DeviceCapability to their project's Package.appxmanifest file.
         /// Capability must be defined only once in your app's Package.appxmanifest as follows:
-        /// 
         /// <Capabilities>
         ///     <DeviceCapability Name="serialcommunication">
         ///         <Device Id = "any" >
@@ -67,8 +56,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         ///         </Device>
         ///     </DeviceCapability>
         /// </Capabilities>
-        /// 
-        /// *************************************************************************************************
+        /// </summary>
         /// <returns>
         /// Returns a <see cref="Task{List{string}}"/> that contains one or more device indentifiers that logically represent serial device displays.
         /// </returns>
@@ -106,7 +94,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </param>
         /// <param name="portDef">
         /// A <see cref="PortDef"/> baud rate that matches the related Workshop 4 project's baud rate.
-        /// A mismatched baud rate will result in failed communcations between the host and the display.
+        /// A mismatched baud rate will result in failed communication between the host and the display.
         /// </param>
         /// <returns>Returns a <see cref="Task"/></returns>
         public async Task Connect(string deviceId, PortDef portDef)
@@ -114,7 +102,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                Debug.WriteLine(string.Format("Host.Instance.Connect was unable to connect to display using deviceId {0}", deviceId));
+                Debug.WriteLine($"Host.Instance.Connect was unable to connect to display using deviceId {deviceId}");
                 throw new NullReferenceException();
             }
             await serialDeviceDisplay.Connect(deviceId, portDef).ConfigureAwait(false);
@@ -141,8 +129,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(String.Format("Host.Instance.Disconnect threw: {0}", ex.Message));
-                throw ex;
+                Debug.WriteLine($"Host.Instance.Disconnect threw: {ex.Message}");
+                throw;
             }
         }
         #endregion
@@ -163,7 +151,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to subscribe to ReportEventMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to subscribe to ReportEventMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -176,7 +165,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportObjectStatusMessageHandler">
         /// Client function name to receive ReportObjectStatusMessage objects.
         /// </param>
         public void SubscribeToReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
@@ -184,7 +173,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to subscribe to ReportObjectStatusMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to subscribe to ReportObjectStatusMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -197,7 +187,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportMagicBytesMessageHandler">
         /// Client function name to receive ReportMagicBytesMessage objects.
         /// </param>
         public void SubscribeToReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
@@ -205,7 +195,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to subscribe to ReportMagicBytesMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to subscribe to ReportMagicBytesMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -218,7 +209,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportMagicDoubleBytesMessageHandler">
         /// Client function name to receive ReportMagicDoubleBytesMessage objects.
         /// </param>
         public void SubscribeToReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
@@ -226,7 +217,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to subscribe to ReportMagicDoubleBytesMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to subscribe to ReportMagicDoubleBytesMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -247,7 +239,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to unsubscribe from ReportEventMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to unsubscribe from ReportEventMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -260,7 +253,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportObjectStatusMessageHandler">
         /// Client function name to stop receiving ReportObjectStatusMessage objects.
         /// </param>
         public void UnsubscribeFromReportObjectStatusMessages(string deviceId, EventHandler<ReportEventArgs> reportObjectStatusMessageHandler)
@@ -268,7 +261,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to unsubscribe from ReportObjectStatusMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to unsubscribe from ReportObjectStatusMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -281,7 +275,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportMagicBytesMessageHandler">
         /// Client function name to stop receiving ReportMagicBytesMessage objects.
         /// </param>
         public void UnsubscribeFromReportMagicBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicBytesMessageHandler)
@@ -289,7 +283,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to unsubscribe from ReportMagicBytesMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to unsubscribe from ReportMagicBytesMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -302,7 +297,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
-        /// <param name="reportEventMessageHandler">
+        /// <param name="reportMagicDoubleBytesMessageHandler">
         /// Client function name to stop receiving ReportMagicDoubleBytesMessage objects.
         /// </param>
         public void UnsubscribeFromReportMagicDoubleBytesMessages(string deviceId, EventHandler<ReportEventArgs> reportMagicDoubleBytesMessageHandler)
@@ -310,7 +305,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Unable to unsubscribe from ReportMagicDoubleBytesMessages because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Unable to unsubscribe from ReportMagicDoubleBytesMessages because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -318,109 +314,56 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         }
         #endregion
 
-        #region FUTURE SUPPORT FOR REACTIVE EXTENSION SUBSCRIPTIONS 
-
-        /*WAITING FOR RX-MAIN UWP RELEASE. CURRENTLY 2.3.0-beta2 AND DON'T WANT UNSTABLE NUGET PACKAGE DEPENDENCY
-        public IObservable<ReportEventMessage> SubscribeToReportEventMessages(string deviceId)
-        {
-            var serialDeviceDisplay = this.LookupDevice(deviceId);
-            if (serialDeviceDisplay == null)
-            {
-                var error = string.Format("Unable to subscribe to ReportEventMessage events because deviceId {0} could not be found", deviceId);
-                Debug.WriteLine(error);
-                throw new NullReferenceException(error);
-            }
-
-            var observableREMR = serialDeviceDisplay.ReportEventMessageReceived;
-            return observableREMR;
-        }
-
-        public IObservable<ReportObjectStatusMessage> SubscribeToReportObjectStatusMessage(string deviceId)
-        {
-            var serialDeviceDisplay = this.LookupDevice(deviceId);
-            if (serialDeviceDisplay == null)
-            {
-                var error = string.Format("Unable to subscribe to ReportObjectStatusMessage events because deviceId {0} could not be found", deviceId);
-                Debug.WriteLine(error);
-                throw new NullReferenceException(error);
-            }
-
-            var observableROSMR = serialDeviceDisplay.ReportObjectStatusMessageReceived;
-            return observableROSMR;
-        }
-
-        public IObservable<ReportMagicBytesMessage> SubscribeToReportMagicBytesMessage(string deviceId)
-        {
-            var serialDeviceDisplay = this.LookupDevice(deviceId);
-            if (serialDeviceDisplay == null)
-            {
-                var error = string.Format("Unable to subscribe to ReportMagicBytesMessage events because deviceId {0} could not be found", deviceId);
-                Debug.WriteLine(error);
-                throw new NullReferenceException(error);
-            }
-
-            var observableRMBMR = serialDeviceDisplay.ReportMagicBytesMessageReceived;
-            return observableRMBMR;
-        }
-
-        public IObservable<ReportMagicDoubleBytesMessage> SubscribeToReportMagicDoubleBytesMessage(string deviceId)
-        {
-            var serialDeviceDisplay = this.LookupDevice(deviceId);
-            if (serialDeviceDisplay == null)
-            {
-                var error = string.Format("Unable to subscribe to ReportMagicDoubleBytesMessage events because deviceId {0} could not be found", deviceId);
-                Debug.WriteLine(error);
-                throw new NullReferenceException(error);
-            }
-
-            var observableRMDBMR = serialDeviceDisplay.ReportMagicDoubleBytesMessageReceived;
-            return observableRMDBMR;
-        }
-        */
-        #endregion
-
         #region SUBSCRIPTION LIFETIME 
         /// <summary>
         /// Given a discovered deviceID, starts the internal display listener tasks.
         /// This method needs to be called once before using the Host.Instance.Send methods.
         /// Precondition: The <see cref="Connect"/> task was successful.
-        ///  
         /// </summary>
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
         /// <returns>Returns a <see cref="Task"/> to be awaited across the listening lifetime.</returns>
-        public async Task StartListening(string deviceId)
+        public Task StartListening(string deviceId)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Host.Instance.StartListening was unable to start listening to display because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Host.Instance.StartListening was unable to start listening to display because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
 
             var tasks = new List<Task>();
 
-            Task taskDequeueReportEventMessages = serialDeviceDisplay.DequeueReportEventMessages(serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Token);
+            Task taskDequeueReportEventMessages =
+                serialDeviceDisplay.DequeueReportEventMessages(serialDeviceDisplay
+                    .ReportEventMessageCancellationTokenSource.Token);
             tasks.Add(taskDequeueReportEventMessages);
 
-            Task taskDequeueReportObjectStatusMessages = serialDeviceDisplay.DequeueReportObjectStatusMessages(serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Token);
+            Task taskDequeueReportObjectStatusMessages =
+                serialDeviceDisplay.DequeueReportObjectStatusMessages(serialDeviceDisplay
+                    .ReportObjectStatusMessageCancellationTokenSource.Token);
             tasks.Add(taskDequeueReportObjectStatusMessages);
 
-            Task taskDequeueReportMagicBytesMessages = serialDeviceDisplay.DequeueReportMagicBytesMessages(serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Token);
+            Task taskDequeueReportMagicBytesMessages =
+                serialDeviceDisplay.DequeueReportMagicBytesMessages(serialDeviceDisplay
+                    .ReportObjectStatusMessageCancellationTokenSource.Token);
             tasks.Add(taskDequeueReportObjectStatusMessages);
 
-            Task taskReportMagicDoubleBytesMessages = serialDeviceDisplay.DequeueReportMagicDoubleBytesMessages(serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Token);
+            Task taskReportMagicDoubleBytesMessages =
+                serialDeviceDisplay.DequeueReportMagicDoubleBytesMessages(serialDeviceDisplay
+                    .ReportObjectStatusMessageCancellationTokenSource.Token);
             tasks.Add(taskReportMagicDoubleBytesMessages);
 
             //Internal entry point for all events including ACK/NAK
             Task taskMessageReceiver = serialDeviceDisplay.Receive(serialDeviceDisplay.ReceiveCancellationTokenSource.Token);
             tasks.Add(taskMessageReceiver);
 
-            Debug.WriteLine(string.Format("Starting tasks for device {0} to listen to queues...", deviceId));
+            Debug.WriteLine($"Starting tasks for device {deviceId} to listen to queues...");
 
-            Task taskWhenAll = Task.WhenAll(tasks.ToArray());
+            Task taskWhenAll = Task.WhenAll(tasks.ToArray()) ?? throw new ArgumentNullException("Task.WhenAll(tasks.ToArray())");
 
             //
             //******Mark that listener tasks are running
@@ -428,13 +371,10 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             serialDeviceDisplay.AreEventListenerTasksRunning = true;
  
             //Run until told to cancel
-            await taskWhenAll;
+            return taskWhenAll;
         }
 
-        /// <summary>
-        /// Given a discovered deviceID, stops the internal display listener tasks.
-        /// Precondition: The <see cref="StartSubscriptions"/> has been called.
-        /// </summary>
+        /// <summary>Given a discovered deviceID, stops the internal display listener tasks. Precondition: The <see cref="StartSubscriptions"/> has been called.</summary>
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
@@ -446,15 +386,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(String.Format("StopListening threw: {0}", ex.Message));
-                throw ex;
+                Debug.WriteLine($"StopListening threw: {ex.Message}");
+                throw;
             }
         }
         #endregion
 
         #region SEND MESSAGE TO SERIAL DEVICE DISPLAY 
         /// <summary>
-        /// Polymorphically sends a WriteMessage subclass to the display.
+        /// Sends a WriteMessage to the display.
         /// </summary>
         /// <remarks>
         /// Caller should consider using the CancellationTokenSource Constructor (Int32),
@@ -473,9 +413,10 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <returns>
         /// A <see cref="Task{Acknowledgement}"/> to determine is the <see cref="WriteMessage"/> returned ACK, NAK or TIMEOUT.  
         /// </returns>
-        public async Task<Acknowledgement> Send(string deviceId, WriteMessage writeMessage, CancellationToken cancellationToken)
+        public async Task<Acknowledgement> Send(string deviceId, WriteMessage writeMessage,
+            CancellationToken cancellationToken)
         {
-            return await this.Send(deviceId, writeMessage.ToByteArray(), cancellationToken);
+            return await this.Send(deviceId, writeMessage.ToByteArray(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -495,16 +436,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <param name="cancellationToken">
         /// A <see cref="CancellationToken"/> that can cancel or timeout the cref="Send"/> method. 
         /// </param>
-        /// <returns>
-        /// A <see cref="Task{Acknowledgement}"/> to determine if <see cref="WriteMessage"/> returned ACK, NAK or TIMEOUT.  
-        /// </returns>
-        /// <returns>
-        public async Task<Acknowledgement> Send(string deviceId, byte[] bytesToWrite, CancellationToken cancellationToken)
+        /// <returns>A <see cref="Task{Acknowledgement}"/> to determine if <see cref="WriteMessage"/> returned ACK, NAK or TIMEOUT.</returns>
+        public async Task<Acknowledgement> Send(string deviceId, byte[] bytesToWrite,
+            CancellationToken cancellationToken)
         {
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("Host.Instance.Send cannot send message to display because deviceId {0} could not be found", deviceId);
+                var error =
+                    $"Host.Instance.Send cannot send message to display because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
@@ -524,9 +464,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </summary>
         private Dictionary<string, SerialDeviceDisplay> SerialDeviceDisplays { get; set; }
 
-        // <summary>
-        /// Given a valid deviceId key string, this method returns a particular <see cref="SerialDeviceDisplay"/> instance.
-        /// </summary>
+        // <summary>Given a valid deviceId key string, this method returns a particular <see cref="SerialDeviceDisplay"/> instance.</summary>
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
@@ -535,17 +473,15 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// </returns>
         private SerialDeviceDisplay LookupDevice(string deviceId)
         {
+            SerialDeviceDisplay serialDeviceDisplay = this.SerialDeviceDisplays[deviceId];
             if (this.SerialDeviceDisplays.ContainsKey(deviceId))
             {
-                SerialDeviceDisplay serialDeviceDisplay = this.SerialDeviceDisplays[deviceId];
                 return serialDeviceDisplay;
             }
             return null;
         }
 
-        // <summary>
-        /// Given a valid deviceId key string, this method removes <see cref="SerialDeviceDisplay"/> instance.
-        /// </summary>
+        // <summary> Given a valid deviceId key string, this method removes <see cref="SerialDeviceDisplay"/> instance.</summary>
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
@@ -559,9 +495,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         #endregion
 
         #region
-        // <summary>
-        /// Given a valid deviceId key string, this cancels internal tasks used by the <see cref="SerialDeviceDisplay"/> instance.
-        /// </summary>
+        // <summary>Given a valid deviceId key string, this cancels internal tasks used by the <see cref="SerialDeviceDisplay"/> instance.</summary>
         /// <param name="deviceId">
         /// A unique key that represents a physically connected serial device display.
         /// </param>
@@ -570,34 +504,31 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("No task were cancelled because deviceId {0} could not be found", deviceId);
+                var error = $"No task were cancelled because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }
 
             try
             {
-                //await Task.Run( () =>
-                //{
-                    serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Cancel();
-                    Debug.WriteLine(string.Format("Cancelled DequeueReportEvent Task indentified by {0}", deviceId));
+                serialDeviceDisplay.ReportEventMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine($"Cancelled DequeueReportEvent Task identified by {deviceId}");
 
-                    serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Cancel();
-                    Debug.WriteLine(string.Format("Cancelled DequeueReportObjectStatusMessages Task indentified by {0}", deviceId));
+                serialDeviceDisplay.ReportObjectStatusMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine($"Cancelled DequeueReportObjectStatusMessages Task identified by {deviceId}");
 
-                    serialDeviceDisplay.ReportMagicBytesMessageCancellationTokenSource.Cancel();
-                    Debug.WriteLine(string.Format("Cancelled ReportMagicBytesMessage Task indentified by {0}", deviceId));
+                serialDeviceDisplay.ReportMagicBytesMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine($"Cancelled ReportMagicBytesMessage Task identified by {deviceId}");
 
-                    serialDeviceDisplay.ReportMagicDoubleBytesMessageCancellationTokenSource.Cancel();
-                    Debug.WriteLine(string.Format("Cancelled ReportMagicDoubleBytesMessage Task indentified by {0}", deviceId));
+                serialDeviceDisplay.ReportMagicDoubleBytesMessageCancellationTokenSource.Cancel();
+                Debug.WriteLine($"Cancelled ReportMagicDoubleBytesMessage Task identified by {deviceId}");
 
-                    serialDeviceDisplay.ReceiveCancellationTokenSource.Cancel();
-                    Debug.WriteLine(string.Format("Cancelled Receive Task indentified by {0}", deviceId));
-                //});
+                serialDeviceDisplay.ReceiveCancellationTokenSource.Cancel();
+                Debug.WriteLine($"Cancelled Receive Task identified by {deviceId}");
             }
             catch (TaskCanceledException tce)
             {
-                Debug.WriteLine(String.Format("CancelAllTokenSource caught {0}", tce.Message));
+                Debug.WriteLine($"CancelAllTokenSource caught {tce.Message}");
             }
         }
 
@@ -612,7 +543,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             var serialDeviceDisplay = this.LookupDevice(deviceId);
             if (serialDeviceDisplay == null)
             {
-                var error = string.Format("No subscriptions were removed because deviceId {0} could not be found", deviceId);
+                var error = $"No subscriptions were removed because deviceId {deviceId} could not be found";
                 Debug.WriteLine(error);
                 throw new NullReferenceException(error);
             }

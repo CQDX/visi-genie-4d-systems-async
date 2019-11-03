@@ -21,7 +21,7 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Note1: The ASCII characters are 1 byte each.
     /// Note2: The String should be null terminated.
     /// Note3: Refer to the application notes for detailed information on Strings and their usage.
-    /// eference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
+    /// Reference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
     public class WriteStringAsciiMessage
         : WriteMessage,
@@ -127,13 +127,10 @@ namespace ViSiGenie4DSystems.Async.Message
         {
             this.Checksum = this.CalculateChecksum();
 
-            var stack = new List<byte>();
-
-            stack.Add(Convert.ToByte(this.Command));
-
-            stack.Add(Convert.ToByte(this.StrIndex));
-
-            stack.Add(Convert.ToByte(this.StrLen));
+            var stack = new List<byte>
+            {
+                Convert.ToByte(this.Command), Convert.ToByte(this.StrIndex), Convert.ToByte(this.StrLen)
+            };
 
             foreach (var c in this.Str)
             {
@@ -154,19 +151,19 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0}", b.ToString("X2")));
+                sb.Append($"0x{b:X2}");
             }
             return sb.ToString();
         }
 
         public void Write()
         {
-            Debug.Write(String.Format("WriteStringASCIIMessage {0}", ToHexString()));
+            Debug.Write($"WriteStringASCIIMessage {ToHexString()}");
         }
 
         public void WriteLine()
         {
-            Debug.WriteLine(String.Format("WriteStringASCIIMessage {0}", ToHexString()));
+            Debug.WriteLine($"WriteStringASCIIMessage {ToHexString()}");
         }
     }
 }

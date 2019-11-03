@@ -94,7 +94,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <summary>
         /// Pack bytes into internal representation required by magic byte data structure
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="bytes"></param>
         public void PackBytes(byte[] bytes)
         {
             this.Bytes = bytes;
@@ -163,19 +163,19 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0}", b.ToString("X2")));
+                sb.Append($"0x{b:X2}");
             }
             return sb.ToString();
         }
 
         public virtual void Write()
         {
-            Debug.Write(String.Format("WriteMagicByteMessage {0}", ToHexString()));
+            Debug.Write($"WriteMagicByteMessage {ToHexString()}");
         }
 
         public virtual void WriteLine()
         {
-            Debug.WriteLine(String.Format("WriteMagicByteMessage {0}", ToHexString()));
+            Debug.WriteLine($"WriteMagicByteMessage {ToHexString()}");
         }
     }
 }

@@ -47,7 +47,7 @@ namespace ViSiGenie4DSystems.Async.Message
 
         public void PackBytes(uint value)
         {
-            this.Lsb = (value >> 0) & 0xFF;
+            this.Lsb = value & 0xFF;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0} ", b.ToString("X2")));
+                sb.Append($"0x{b:X2} ");
             }
             return sb.ToString();
         }
@@ -118,12 +118,12 @@ namespace ViSiGenie4DSystems.Async.Message
 
         public void Write()
         {
-            Debug.Write(String.Format("WriteContrastMessage {0}", ToHexString()));
+            Debug.Write($"WriteContrastMessage {ToHexString()}");
         }
 
         public void WriteLine()
         {
-            Debug.WriteLine(String.Format("WriteContrastMessage {0}", ToHexString()));
+            Debug.WriteLine($"WriteContrastMessage {ToHexString()}");
         }
     }
 }

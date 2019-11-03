@@ -20,10 +20,7 @@ namespace ViSiGenie4DSystems.Async.Enumeration
             this.HumanReadable = value;
         }
 
-        public string Value
-        {
-            get { return this.HumanReadable; }
-        }
+        public string Value => this.HumanReadable;
     }
 
     public static class EnumString
@@ -34,7 +31,7 @@ namespace ViSiGenie4DSystems.Async.Enumeration
             Type type = value.GetType();
             FieldInfo fi = type.GetField(value.ToString());
             EnumDescription[] attrs = fi.GetCustomAttributes(typeof(EnumDescription), false) as EnumDescription[];
-            if (attrs.Length > 0)
+            if (attrs != null && attrs.Length > 0)
             {
                 output = attrs[0].Value;
             }
@@ -54,7 +51,7 @@ namespace ViSiGenie4DSystems.Async.Enumeration
                 if (null != fi)
                 {
                     EnumDescription[] descriptions = fi.GetCustomAttributes(typeof(EnumDescription), true) as EnumDescription[];
-                    if (descriptions.Length > 0)
+                    if (descriptions != null && descriptions.Length > 0)
                     {
                         enumList.Add(descriptions[0].Value);
                     }
@@ -86,7 +83,6 @@ namespace ViSiGenie4DSystems.Async.Enumeration
             }
             catch (System.InvalidOperationException)
             {
-                //TODO: Need fix. What shoudl be returned if description is null?
                 return (T)typeof(T).GetFields().First().GetCustomAttributes<EnumDescription>();
             }
         }

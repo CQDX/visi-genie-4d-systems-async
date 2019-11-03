@@ -126,7 +126,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0}", b.ToString("X2")));
+                sb.Append($"0x{b:X2}");
             }
             return sb.ToString();
         }
@@ -144,12 +144,12 @@ namespace ViSiGenie4DSystems.Async.Message
 
         public void Write()
         {
-            Debug.Write(String.Format("ReportObjectStatusMessage {0}", ToHexString()));
+            Debug.Write($"ReportObjectStatusMessage {ToHexString()}");
         }
 
         public void WriteLine()
         {
-            Debug.WriteLine(String.Format("ReportObjectStatusMessage {0}", ToHexString()));
+            Debug.WriteLine($"ReportObjectStatusMessage {ToHexString()}");
         }
 
     }

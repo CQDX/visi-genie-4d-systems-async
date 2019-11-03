@@ -105,16 +105,13 @@ namespace ViSiGenie4DSystems.Async.Message
         {
             this.Checksum = this.CalculateChecksum();
 
-            var stack = new List<byte>();
+            var stack = new List<byte>
+            {
+                Convert.ToByte(this.Command), Convert.ToByte(this.ObjectIndex), Convert.ToByte(this.Length)
+            };
 
             //Push
-            stack.Add(Convert.ToByte(this.Command));
-
-            stack.Add(Convert.ToByte(this.ObjectIndex));
-
-            stack.Add(Convert.ToByte(this.Length));
-
-            for (int c = this.Length - 1; c >= 0; c--)
+            for (var c = this.Length - 1; c >= 0; c--)
             {
                 stack.Add(this.Bytes[c]);
             }
@@ -131,19 +128,19 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0}", b.ToString("X2")));
+                sb.Append($"0x{b:X2}");
             }
             return sb.ToString();
         }
 
         public virtual void Write()
         {
-            Debug.Write(String.Format("ReportMagicByteMessage {0}", ToHexString()));
+            Debug.Write($"ReportMagicByteMessage {ToHexString()}");
         }
 
         public virtual void WriteLine()
         {
-            Debug.WriteLine(String.Format("ReportMagicByteMessage {0}", ToHexString()));
+            Debug.WriteLine($"ReportMagicByteMessage {ToHexString()}");
         }
     }
 }

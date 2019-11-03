@@ -68,7 +68,6 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <summary>
         /// The least significant byte of the value to be sent to meter 
         /// </summary>
-        /// </summary>
         public uint Lsb { get; set; }
 
         /// <summary>
@@ -77,7 +76,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <param name="reportValue"></param>
         public void PackBytes(uint reportValue)
         {
-            this.Lsb = (reportValue >> 0) & 0xFF;
+            this.Lsb = reportValue  & 0xFF;
             this.Msb = (reportValue >> 8) & 0xFF;
         }
 
@@ -126,7 +125,7 @@ namespace ViSiGenie4DSystems.Async.Message
             byte[] bytes = this.ToByteArray();
             foreach (var b in bytes)
             {
-                sb.Append(String.Format("0x{0}", b.ToString("X2")));
+                sb.Append($"0x{b:X2}");
             }
             return sb.ToString();
         }
@@ -144,12 +143,12 @@ namespace ViSiGenie4DSystems.Async.Message
 
         public void Write()
         {
-            Debug.Write(String.Format("ReportEventMessage {0}", ToHexString()));
+            Debug.Write($"ReportEventMessage {ToHexString()}");
         }
 
         public void WriteLine()
         {
-            Debug.WriteLine(String.Format("ReportEventMessage {0}", ToHexString()));
+            Debug.WriteLine($"ReportEventMessage {ToHexString()}");
         }
     }
 }
