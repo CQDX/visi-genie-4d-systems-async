@@ -1,11 +1,4 @@
 ﻿// Copyright (c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ViSiGenie4DSystems.Async.Specification;
 using ViSiGenie4DSystems.Async.Enumeration;
 
 namespace ViSiGenie4DSystems.Async.Message
@@ -18,7 +11,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// </summary>
         public ReportMagicDoubleBytesMessage()
         {
-            this.Command = Command.WRITE_MAGIC_EVENT_DBYTES;
+            this.Command = Command.WriteMagicEventDbytes;
         }
 
         public ReportMagicDoubleBytesMessage(int objectIndex, int lengthOfMagicBytes, byte[] magicBytes, uint checksum)

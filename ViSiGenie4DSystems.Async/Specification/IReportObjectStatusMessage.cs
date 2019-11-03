@@ -1,10 +1,4 @@
 ﻿// Copyright (c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 
 namespace ViSiGenie4DSystems.Async.Specification
@@ -32,12 +26,12 @@ namespace ViSiGenie4DSystems.Async.Specification
         /// <summary>
         /// Most significant byte of the 2 byte VALUE
         /// </summary>
-        uint MSB { get; set; }
+        uint Msb { get; set; }
 
         /// <summary>
         /// Least significant byte of the 2 byte VALUE
         /// </summary>
-        uint LSB { get; set; }
+        uint Lsb { get; set; }
 
         /// <summary>
         /// Checksum byte

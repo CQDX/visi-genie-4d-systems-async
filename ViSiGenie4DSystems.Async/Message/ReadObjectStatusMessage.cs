@@ -1,11 +1,7 @@
 ﻿// Copyright (c) 2016 Michael Dorough
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
 
@@ -46,7 +42,7 @@ namespace ViSiGenie4DSystems.Async.Message
         public ReadObjectStatusMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.READ_OBJ;
+            this.Command = Command.ReadObj;
         }
 
         /// <summary>
@@ -107,7 +103,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Checksum is placed at last element in byte array.
         /// </summary>
         /// <returns></returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 

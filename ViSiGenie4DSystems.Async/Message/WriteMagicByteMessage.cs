@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
 
@@ -35,7 +34,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// </summary>
         public WriteMagicByteMessage()
         {
-            this.Command = Command.WRITE_MAGIC_BYTES;
+            this.Command = Command.WriteMagicBytes;
             this.Bytes = null;
             this.Length = 0;
             this.Checksum = 0;      
@@ -134,7 +133,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Checksum is placed at last element in byte array.
         /// </summary>
         /// <returns></returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 
@@ -169,12 +168,12 @@ namespace ViSiGenie4DSystems.Async.Message
             return sb.ToString();
         }
 
-        virtual public void Write()
+        public virtual void Write()
         {
             Debug.Write(String.Format("WriteMagicByteMessage {0}", ToHexString()));
         }
 
-        virtual public void WriteLine()
+        public virtual void WriteLine()
         {
             Debug.WriteLine(String.Format("WriteMagicByteMessage {0}", ToHexString()));
         }

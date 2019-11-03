@@ -1,12 +1,7 @@
 ﻿// Copyright (c) 2016 Michael Dorough
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
 
@@ -36,7 +31,7 @@ namespace ViSiGenie4DSystems.Async.Message
         private ReportEventMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.REPORT_EVENT;
+            this.Command = Command.ReportEvent;
         }
 
         public ReportEventMessage(byte[] message)
@@ -44,8 +39,8 @@ namespace ViSiGenie4DSystems.Async.Message
         {
             this.ObjectType = (ObjectType)message[1];
             this.ObjectIndex = (int)message[2];
-            this.MSB = (uint)message[3];
-            this.LSB = (uint)message[4];
+            this.Msb = (uint)message[3];
+            this.Lsb = (uint)message[4];
             this.Checksum = (uint)message[5];
         }
 
@@ -68,13 +63,13 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <summary>
         /// The most significant byte of the value to be sent to meter 
         /// </summary>
-        public uint MSB { get; set; }
+        public uint Msb { get; set; }
 
         /// <summary>
         /// The least significant byte of the value to be sent to meter 
         /// </summary>
         /// </summary>
-        public uint LSB { get; set; }
+        public uint Lsb { get; set; }
 
         /// <summary>
         /// Combines the MSB and LSB into one word.
@@ -82,8 +77,8 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <param name="reportValue"></param>
         public void PackBytes(uint reportValue)
         {
-            this.LSB = (reportValue >> 0) & 0xFF;
-            this.MSB = (reportValue >> 8) & 0xFF;
+            this.Lsb = (reportValue >> 0) & 0xFF;
+            this.Msb = (reportValue >> 8) & 0xFF;
         }
 
         public uint Checksum { get; set; }
@@ -100,15 +95,15 @@ namespace ViSiGenie4DSystems.Async.Message
 
             workingChecksum ^= (uint)this.ObjectIndex;
 
-            workingChecksum ^= this.MSB;
+            workingChecksum ^= this.Msb;
 
-            workingChecksum ^= this.LSB;
+            workingChecksum ^= this.Lsb;
 
             return workingChecksum;
         }
 
         #region IMPLEMENTATION OF ABSTRACT METHODS
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 
@@ -117,8 +112,8 @@ namespace ViSiGenie4DSystems.Async.Message
             bytes[0] = Convert.ToByte(this.Command);
             bytes[1] = Convert.ToByte(this.ObjectType);
             bytes[2] = Convert.ToByte(this.ObjectIndex);
-            bytes[3] = Convert.ToByte(this.MSB);
-            bytes[4] = Convert.ToByte(this.LSB);
+            bytes[3] = Convert.ToByte(this.Msb);
+            bytes[4] = Convert.ToByte(this.Lsb);
             bytes[5] = Convert.ToByte(this.Checksum);
 
             return bytes;

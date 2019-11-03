@@ -2,17 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using ViSiGenie4DSystems.Async.Enumeration;
+using ViSiGenie4DSystems.Async.Event;
+using ViSiGenie4DSystems.Async.Message;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
-
-using ViSiGenie4DSystems.Async.Enumeration;
-using ViSiGenie4DSystems.Async.Message;
-using ViSiGenie4DSystems.Async.Event;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
@@ -29,7 +25,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <summary>
         /// Singleton initialization
         /// </summary>
-        private static readonly Lazy<Host> veryLazy = new Lazy<Host>(() => new Host());
+        private static readonly Lazy<Host> VeryLazy = new Lazy<Host>(() => new Host());
 
         /// <summary>
         /// The single instance of the Host object.
@@ -38,7 +34,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             get
             {
-                return veryLazy.Value;
+                return VeryLazy.Value;
             }
         }
 

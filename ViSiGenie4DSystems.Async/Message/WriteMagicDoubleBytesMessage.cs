@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2016 Michael Dorough
 using System;
 using System.Diagnostics;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 
 namespace ViSiGenie4DSystems.Async.Message
@@ -25,7 +24,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// </summary>
         public WriteMagicDoubleBytesMessage()
         {
-            this.Command = Command.WRITE_MAGIC_EVENT_DBYTES;
+            this.Command = Command.WriteMagicEventDbytes;
             this.Bytes = null;
             this.Length = 0;
             this.Checksum = 0;
@@ -77,12 +76,12 @@ namespace ViSiGenie4DSystems.Async.Message
         }
 
 
-        override public void Write()
+        public override void Write()
         {
             Debug.Write(String.Format("WriteMagicDoubleBytesMessage {0}", ToHexString()));
         }
 
-        override public void WriteLine()
+        public override void WriteLine()
         {
             Debug.WriteLine(String.Format("WriteMagicDoubleBytesMessage {0}", ToHexString()));
         }

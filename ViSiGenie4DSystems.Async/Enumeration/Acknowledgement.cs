@@ -1,9 +1,4 @@
 ﻿// Copyright (c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViSiGenie4DSystems.Async.Enumeration
 {
@@ -23,7 +18,7 @@ namespace ViSiGenie4DSystems.Async.Enumeration
         /// The transmission message for this is a single byte: 0x06
         /// </summary>
         [EnumDescription("ACK")]
-        ACK = 0x06,
+        Ack = 0x06,
 
         /// <summary>
         /// Not Acknowledge byte (0x15); this byte is issued by the receiver (Display or Host) to the
@@ -32,9 +27,9 @@ namespace ViSiGenie4DSystems.Async.Enumeration
         /// The transmission message for this is a single byte: 0x15
         /// </summary>
         [EnumDescription("NAK")]
-        NAK = 0x15,
+        Nak = 0x15,
 
         [EnumDescription("TIMEOUT")]
-        TIMEOUT = 0x00
+        Timeout = 0x00
     }
 }

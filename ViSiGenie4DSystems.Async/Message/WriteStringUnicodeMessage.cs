@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
@@ -35,7 +33,7 @@ namespace ViSiGenie4DSystems.Async.Message
         public WriteStringUnicodeMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.WRITE_STRU;
+            this.Command = Command.WriteStru;
         }
 
         public WriteStringUnicodeMessage(int strIndex)
@@ -131,7 +129,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Uses a List<byte> stack lifo to dyanamically allocate byte[] array.
         /// </summary>
         /// <returns>byte[] array to be sent to display</returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 

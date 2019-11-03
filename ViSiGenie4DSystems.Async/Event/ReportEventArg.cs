@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
@@ -13,24 +12,24 @@ namespace ViSiGenie4DSystems.Async.Event
     /// </summary>
     public sealed class ReportEventArgs
     {
-        private readonly List<TaskCompletionSource<object>> taskCompletionSources;
+        private readonly List<TaskCompletionSource<object>> _taskCompletionSources;
 
         public ReportEventArgs()
         {
-            taskCompletionSources = new List<TaskCompletionSource<object>>();
+            _taskCompletionSources = new List<TaskCompletionSource<object>>();
         }
 
         public Deferral GetDeferral()
         {
             var tcs = new TaskCompletionSource<object>();
             var deferral = new Deferral(() => tcs.SetResult(null));
-            taskCompletionSources.Add(tcs);
+            _taskCompletionSources.Add(tcs);
             return deferral;
         }
 
         public IAsyncAction DeferAsync()
         {
-            return Task.WhenAll(taskCompletionSources.Select(tcs => tcs.Task)).AsAsyncAction();
+            return Task.WhenAll(_taskCompletionSources.Select(tcs => tcs.Task)).AsAsyncAction();
         }
     }
 }

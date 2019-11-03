@@ -1,10 +1,4 @@
 ﻿// Copyright (c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Specification;
 
 namespace ViSiGenie4DSystems.Async.Message
@@ -16,9 +10,9 @@ namespace ViSiGenie4DSystems.Async.Message
     /// <remarks>
     /// Notice <see cref="Host"/> Send method is written in terms of this abstract base class.
     /// </remarks>
-    abstract public class WriteMessage
+    public abstract class WriteMessage
         : IMessageFormat
     {
-        abstract public byte[] ToByteArray();
+        public abstract byte[] ToByteArray();
     }
 }

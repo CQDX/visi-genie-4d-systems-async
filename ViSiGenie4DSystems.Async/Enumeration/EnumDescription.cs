@@ -3,13 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViSiGenie4DSystems.Async.Enumeration
 {
     /// <summary>
-    /// Supports convertings enum integers to human readable string representations
+    /// Supports converting enum integers to human readable string representations
     /// Applicable for supporting XAML type converters in UI apps.
     /// Reference: http://stackoverflow.com/questions/2787506/get-enum-from-enum-attribute
     /// </summary>

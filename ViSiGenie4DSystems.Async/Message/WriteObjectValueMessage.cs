@@ -1,11 +1,7 @@
 ﻿// Copyright(c) 2016 Michael Dorough
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
 
@@ -33,7 +29,7 @@ namespace ViSiGenie4DSystems.Async.Message
         public WriteObjectValueMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.WRITE_OBJ;
+            this.Command = Command.WriteObj;
         }
 
         /// <summary>
@@ -72,8 +68,8 @@ namespace ViSiGenie4DSystems.Async.Message
             this.Command = otherWriteObjectValueMessage.Command;
             this.ObjectType = otherWriteObjectValueMessage.ObjectType;
             this.ObjectIndex = otherWriteObjectValueMessage.ObjectIndex;
-            this.LSB = otherWriteObjectValueMessage.LSB;
-            this.MSB = otherWriteObjectValueMessage.MSB;
+            this.Lsb = otherWriteObjectValueMessage.Lsb;
+            this.Msb = otherWriteObjectValueMessage.Msb;
             this.Checksum = this.CalculateChecksum();
         }
 
@@ -95,13 +91,13 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <summary>
         /// Most significant byte of the 2 byte VALUE
         /// </summary>
-        public uint MSB { get; set; }
+        public uint Msb { get; set; }
 
         /// <summary>
         /// Least significant byte of the 2 byte VALUE
         /// </summary>
         /// </summary>
-        public uint LSB { get; set; }
+        public uint Lsb { get; set; }
 
         /// <summary>
         /// Combines the MSB and LSB into one word.
@@ -109,8 +105,8 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <param name="value"></param>
         public void PackBytes(uint value)
         {
-            this.LSB = (value >> 0) & 0xFF;
-            this.MSB = (value >> 8) & 0xFF;
+            this.Lsb = (value >> 0) & 0xFF;
+            this.Msb = (value >> 8) & 0xFF;
         }
 
         /// <summary>
@@ -130,9 +126,9 @@ namespace ViSiGenie4DSystems.Async.Message
 
             workingChecksum ^= (uint)this.ObjectIndex;
 
-            workingChecksum ^= this.MSB;
+            workingChecksum ^= this.Msb;
 
-            workingChecksum ^= this.LSB;
+            workingChecksum ^= this.Lsb;
 
             return workingChecksum;
         }
@@ -144,7 +140,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Checksum is placed at last element in byte array.
         /// </summary>
         /// <returns></returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 
@@ -153,8 +149,8 @@ namespace ViSiGenie4DSystems.Async.Message
             bytes[0] = Convert.ToByte(this.Command);
             bytes[1] = Convert.ToByte(this.ObjectType);
             bytes[2] = Convert.ToByte(this.ObjectIndex);
-            bytes[3] = Convert.ToByte(this.MSB);
-            bytes[4] = Convert.ToByte(this.LSB);
+            bytes[3] = Convert.ToByte(this.Msb);
+            bytes[4] = Convert.ToByte(this.Lsb);
             bytes[5] = Convert.ToByte(this.Checksum);
 
             return bytes;

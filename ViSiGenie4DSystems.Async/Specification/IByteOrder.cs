@@ -1,9 +1,4 @@
 ﻿// Copyright (c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViSiGenie4DSystems.Async.Specification
 {
@@ -11,9 +6,9 @@ namespace ViSiGenie4DSystems.Async.Specification
     /// A generic type parameter contravariant to support different byte ordering typing. 
     /// Abstracted from Section 3 of the Visi-Genie Reference Manual.
     /// </summary>
-    public interface IByteOrder<in A>
+    public interface IByteOrder<in TA>
     {
-        void PackBytes(A value);
+        void PackBytes(TA value);
 
         byte[] ToByteArray();
     }

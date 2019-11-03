@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
@@ -25,7 +23,7 @@ namespace ViSiGenie4DSystems.Async.Message
     /// Note3: Refer to the application notes for detailed information on Strings and their usage.
     /// eference: http://www.4dsystems.com.au/productpages/ViSi-Genie/downloads/Visi-Genie_refmanual_R_1_11.pdf
     /// </summary>
-    public class WriteStringASCIIMessage
+    public class WriteStringAsciiMessage
         : WriteMessage,
           IWriteStringMessage,
           ICalculateChecksum,
@@ -33,31 +31,31 @@ namespace ViSiGenie4DSystems.Async.Message
           IToHexString,
           IDebug
     {
-        public WriteStringASCIIMessage()
+        public WriteStringAsciiMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.WRITE_STR;
+            this.Command = Command.WriteStr;
         }
 
-        public WriteStringASCIIMessage(int strIndex)
+        public WriteStringAsciiMessage(int strIndex)
             : this()
         {
             this.StrIndex = strIndex;
         }
 
-        public WriteStringASCIIMessage(int strIndex, string displayMessage)
+        public WriteStringAsciiMessage(int strIndex, string displayMessage)
             : this(strIndex)
         {
             this.PackBytes(displayMessage);
         }
 
-        public WriteStringASCIIMessage(WriteStringASCIIMessage otherWriteStringASCIIMessage)
+        public WriteStringAsciiMessage(WriteStringAsciiMessage otherWriteStringAsciiMessage)
             : this()
         {
-            this.Command = otherWriteStringASCIIMessage.Command;
-            this.StrIndex = otherWriteStringASCIIMessage.StrIndex;
-            this.StrLen = otherWriteStringASCIIMessage.StrLen;
-            this.Str = otherWriteStringASCIIMessage.Str;
+            this.Command = otherWriteStringAsciiMessage.Command;
+            this.StrIndex = otherWriteStringAsciiMessage.StrIndex;
+            this.StrLen = otherWriteStringAsciiMessage.StrLen;
+            this.Str = otherWriteStringAsciiMessage.Str;
         }
 
         /// <summary>
@@ -125,7 +123,7 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Uses a List<byte> stack lifo to dyanamically allocate byte[] array.
         /// </summary>
         /// <returns>byte[] array to be sent to display</returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 

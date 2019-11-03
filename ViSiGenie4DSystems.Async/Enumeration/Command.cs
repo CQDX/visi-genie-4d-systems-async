@@ -14,26 +14,26 @@ namespace ViSiGenie4DSystems.Async.Enumeration
     public enum Command
     {
         [EnumDescription("READ OBJECT")]
-        READ_OBJ = 0,
+        ReadObj = 0,
         [EnumDescription("WRITE OBJECT")]
-        WRITE_OBJ = 1,
+        WriteObj = 1,
         [EnumDescription("WRITE STRING")]
-        WRITE_STR = 2,
+        WriteStr = 2,
         [EnumDescription("WRITE STRING UNICODE")]
-        WRITE_STRU = 3,
+        WriteStru = 3,
         [EnumDescription("WRITE CONTRAST")]
-        WRITE_CONTRAST = 4,
+        WriteContrast = 4,
         [EnumDescription("REPORT OBJECT")]
-        REPORT_OBJ = 5,
+        ReportObj = 5,
         [EnumDescription("REPORT EVENT")]
-        REPORT_EVENT = 7,
+        ReportEvent = 7,
         [EnumDescription("WRITE MAGIC BYTES")]
-        WRITE_MAGIC_BYTES = 8,
+        WriteMagicBytes = 8,
         [EnumDescription("WRITE MAGIC DBYTES")]
-        WRITE_MAGIC_DBYTES = 9,
+        WriteMagicDbytes = 9,
         [EnumDescription("WRITE MAGIC EVENT BYTES")]
-        WRITE_MAGIC_EVENT_BYTES = 10,
+        WriteMagicEventBytes = 10,
         [EnumDescription("WRITE MAGIC EVENT DBYTES")]
-        WRITE_MAGIC_EVENT_DBYTES = 11
+        WriteMagicEventDbytes = 11
     }
 }

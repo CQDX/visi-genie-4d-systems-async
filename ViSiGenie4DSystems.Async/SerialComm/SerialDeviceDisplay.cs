@@ -1,23 +1,14 @@
 ﻿// Copyright(c) 2016 Michael Dorough
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-//using System.Reactive.Subjects; //FUTURE MIGRATION PLAN FOR THIS CODE
-
+using ViSiGenie4DSystems.Async.Enumeration;
+using ViSiGenie4DSystems.Async.Event;
+using ViSiGenie4DSystems.Async.Message;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
-
-using ViSiGenie4DSystems.Async.Enumeration;
-using ViSiGenie4DSystems.Async.Message;
-using ViSiGenie4DSystems.Async.Specification;
-
-using ViSiGenie4DSystems.Async.Event;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
@@ -35,8 +26,8 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         {
             this.AreEventListenerTasksRunning = false;
 
-            this.ACK = (int)Acknowledgement.ACK;
-            this.NAK = (int)Acknowledgement.NAK;
+            this._ack = (int)Acknowledgement.Ack;
+            this._nak = (int)Acknowledgement.Nak;
 
             //See Connect method
             this.SerialDevice = null;
@@ -98,12 +89,12 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <summary>
         /// The response received from display was successfull
         /// </summary>
-        private readonly byte ACK;
+        private readonly byte _ack;
 
         /// <summary>
         /// The response received from the display was unsuccessfull
         /// </summary>
-        private readonly byte NAK;
+        private readonly byte _nak;
 
         /// <summary>
         /// Synchronize one and only send message of N bytes to the display.
@@ -246,7 +237,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <returns></returns>
         public async Task<Acknowledgement> Send(byte[] sendMessage, CancellationToken cancellationToken)
         {
-            Acknowledgement acknowledgement = Acknowledgement.NAK;
+            Acknowledgement acknowledgement = Acknowledgement.Nak;
             try
             {
                 //Wait to enter semaphore, which is an in-process type semaphore
@@ -373,19 +364,19 @@ namespace ViSiGenie4DSystems.Async.SerialComm
             byte[] peakByte = await ReadBytes(readBufferLength, cancellationToken);
             if (peakByte != null)
             {
-                if (peakByte[0] == ACK)
+                if (peakByte[0] == _ack)
                 {
                     //Debug.WriteLine(String.Format("RX ACK 0x{0}: ", peakByte[0].ToString("X2")));
 
                     this.AckNakQueue.Enqueue(peakByte[0]);
                 }
-                else if (peakByte[0] == NAK)
+                else if (peakByte[0] == _nak)
                 {
                     //Debug.WriteLine(String.Format("RX NACK 0x{0}: ", peakByte[0].ToString("X2")));
 
                     this.AckNakQueue.Enqueue(peakByte[0]);
                 }
-                else if (peakByte[0] == ((byte)Command.REPORT_EVENT))
+                else if (peakByte[0] == ((byte)Command.ReportEvent))
                 {
                     const uint readRestOfReportEvent = 5;
                     byte[] moreBytes = await this.ReadBytes(readRestOfReportEvent, cancellationToken);
@@ -410,7 +401,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                         this.ReportEventMessageQueue.Enqueue(new ReportEventMessage(rawReportEvent));
                     }
                 }
-                else if (peakByte[0] == ((byte)Command.REPORT_OBJ))
+                else if (peakByte[0] == ((byte)Command.ReportObj))
                 {
                     const uint readRestOfReportObjectStatusMessage = 5;
                     byte[] moreBytes = await this.ReadBytes(readRestOfReportObjectStatusMessage, cancellationToken);
@@ -435,7 +426,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                         this.ReportObjectStatusMessageQueue.Enqueue(new ReportObjectStatusMessage(rawReportObjectStatusMessage));
                     }
                 }
-                else if (peakByte[0] == ((byte)Command.WRITE_MAGIC_EVENT_BYTES)) //CMD
+                else if (peakByte[0] == ((byte)Command.WriteMagicEventBytes)) //CMD
                 {
                     const uint readRestOfReportMagicMessage = 2; 
                     //GET OBJECT-INDEX + LENGTH
@@ -458,7 +449,7 @@ namespace ViSiGenie4DSystems.Async.SerialComm
                         }
                     }
                 }
-                else if (peakByte[0] == ((byte)Command.WRITE_MAGIC_EVENT_DBYTES)) //CMD
+                else if (peakByte[0] == ((byte)Command.WriteMagicEventDbytes)) //CMD
                 {
                     const uint readRestOfReportMagicMessage = 2;
                     //GET OBJECT-INDEX + LENGTH
@@ -653,30 +644,30 @@ namespace ViSiGenie4DSystems.Async.SerialComm
         /// <returns></returns>
         private async Task<Acknowledgement> DequeueResponse(CancellationToken cancellationToken)
         {
-            Acknowledgement acknowledgement = Acknowledgement.NAK; 
+            Acknowledgement acknowledgement = Acknowledgement.Nak; 
             await Task.Run(() =>
             {
                 byte response;
                 //Block until ACK or NAK until told to cancel this task
                 if ( this.AckNakQueue.TryDequeue(out response) )
                 {
-                    if (response == (int)Acknowledgement.ACK)
+                    if (response == (int)Acknowledgement.Ack)
                     {
                         Debug.WriteLine(String.Format("RX ACK 0x{0}", response.ToString("X2")));
 
-                        acknowledgement = Acknowledgement.ACK;
+                        acknowledgement = Acknowledgement.Ack;
                     }
-                    else if (response == (int)Acknowledgement.NAK)
+                    else if (response == (int)Acknowledgement.Nak)
                     {
                         //SOME ISSUE WITH 4D DISPLAY BUT PROCEED... 
                         Debug.WriteLine(String.Format("RX NAK 0x{0} AFTER 500 mS WAIT", response.ToString("X2")));
 
-                        acknowledgement = Acknowledgement.NAK;
+                        acknowledgement = Acknowledgement.Nak;
                     }
                     else
                     {
                         Debug.WriteLine("RX TIMEOUT");
-                        acknowledgement = Acknowledgement.TIMEOUT;
+                        acknowledgement = Acknowledgement.Timeout;
                     }
                 }                       
             });

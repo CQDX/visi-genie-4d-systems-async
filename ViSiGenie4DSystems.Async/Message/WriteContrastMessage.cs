@@ -1,11 +1,7 @@
 ﻿// Copyright (c) 2016 Michael Dorough
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using ViSiGenie4DSystems.Async.Enumeration;
 using ViSiGenie4DSystems.Async.Specification;
 
@@ -30,7 +26,7 @@ namespace ViSiGenie4DSystems.Async.Message
         public WriteContrastMessage()
         {
             this.Checksum = 0;
-            this.Command = Command.WRITE_CONTRAST;
+            this.Command = Command.WriteContrast;
         }
 
         public WriteContrastMessage(uint contrastValue)
@@ -47,11 +43,11 @@ namespace ViSiGenie4DSystems.Async.Message
         /// <summary>
         /// Contrast value: 0 to 15
         /// </summary>
-        public uint LSB { get; set; }
+        public uint Lsb { get; set; }
 
         public void PackBytes(uint value)
         {
-            this.LSB = (value >> 0) & 0xFF;
+            this.Lsb = (value >> 0) & 0xFF;
         }
 
         /// <summary>
@@ -63,7 +59,7 @@ namespace ViSiGenie4DSystems.Async.Message
         {
             uint workingChecksum = (uint)this.Command;
 
-            workingChecksum ^= this.LSB;
+            workingChecksum ^= this.Lsb;
 
             return workingChecksum;
         }
@@ -75,14 +71,14 @@ namespace ViSiGenie4DSystems.Async.Message
         /// Checksum is placed at last element in byte array.
         /// </summary>
         /// <returns></returns>
-        override public byte[] ToByteArray()
+        public override byte[] ToByteArray()
         {
             this.Checksum = this.CalculateChecksum();
 
             byte[] bytes = new byte[3];
 
             bytes[0] = Convert.ToByte(this.Command);
-            bytes[1] = Convert.ToByte(this.LSB);
+            bytes[1] = Convert.ToByte(this.Lsb);
             bytes[2] = Convert.ToByte(this.Checksum);
 
             return bytes;

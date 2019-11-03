@@ -1,13 +1,6 @@
 ﻿// Copyright(c) 2016 Michael Dorough
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Windows.Devices.SerialCommunication;
-
 using ViSiGenie4DSystems.Async.Enumeration;
+using Windows.Devices.SerialCommunication;
 
 namespace ViSiGenie4DSystems.Async.SerialComm
 {
